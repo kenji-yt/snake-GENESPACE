@@ -1,0 +1,15 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.3
+  - orthofinder=2.5.5
+  - gffread=0.12.7
+  - r-devtools=2.4.5
+  - r-withr=3.0.1
+  - r-mass=7.3.60.0.1
+  - bioconductor-Biostrings=2.70
+  - bioconductor-rtracklayer=1.62
+  - make=4.2.1
+  - tar=1.32

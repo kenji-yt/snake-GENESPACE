@@ -1,4 +1,82 @@
-# Main entrypoint of the workflow. 
-# Please follow the best practices: 
-# https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html,
-# in particular regarding the standardized folder structure mentioned there. 
+## Check minimum Snakemake version
+
+from snakemake.utils import min_version
+
+min_version("5.20.1")
+
+## Import required libraries
+import os
+
+## Configuration file check
+
+if len(config) == 0:
+    if os.path.isfile("config/config.yaml"):
+
+        configfile: "config/config.yaml"
+
+    else:
+        sys.exit(
+            f"Make sure there is a config.yaml file in {os.getcwd()} or specify one with the --configfile commandline parameter."
+        )
+
+
+## Parse config file
+
+OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
+SCRIPTS_DIR = os.path.normpath(config["SCRIPTS"])
+
+
+
+
+rule parse_genespace_input:
+    input:
+        f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
+    params:
+        scripts=SCRIPTS_DIR,
+    log:
+        f"{OUTPUT_DIR}/logs/genespace/genespace.log",
+    conda:
+        "../envs/genespace.yaml"
+    script:
+        "scripts/install_genespace.R" 
+
+
+rule install_genespace:
+    input:
+        f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
+    params:
+        scripts=SCRIPTS_DIR,
+    log:
+        f"{OUTPUT_DIR}/logs/genespace/genespace.log",
+    conda:
+        "../envs/genespace.yaml"
+    script:
+        "scripts/install_genespace.R" 
+
+
+
+rule install_MCScanX:
+    input:
+        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/github_directory",
+    params:
+        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/"
+    log:
+        f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
+    conda:
+        "../envs/genespace.yaml"
+    shell:
+        "make -C {input.mc_scan_dir}" 
+
+
+rule download_MCScanX:
+    output:
+        mc_scan_dir=directory(f"{OUTPUT_DIR}/genespace/MCScanX/github_directory"),
+    log:
+        f"{OUTPUT_DIR}/logs/genespace/MCScanX/MCScanX_dowload.log",
+    shell:
+        "git clone https://github.com/wyp1125/MCScanX {output.mc_scan_dir}"
+
+
+
+
+
