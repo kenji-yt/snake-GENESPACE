@@ -23,7 +23,7 @@ if len(config) == 0:
 ## Parse config file
 
 OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
-SCRIPTS_DIR = os.path.normpath(config["SCRIPTS"])
+INPUT_DIR = os.path.normpath(config["INPUT"])
 
 
 
