@@ -4,7 +4,7 @@ channels:
   - defaults
 dependencies:
   - r-base=4.3
-  - perl=5.34.0
+  - perl=5.32.1
   - bedops=2.4.41
   - orthofinder=2.5.5
   - gffread=0.12.7

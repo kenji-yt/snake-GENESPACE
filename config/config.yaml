@@ -1,4 +1,5 @@
 INPUT: .test/data
 OUTPUT: results/
 SCRIPTS: workflow/scripts/
+N_PROGENITORS: 2
 
