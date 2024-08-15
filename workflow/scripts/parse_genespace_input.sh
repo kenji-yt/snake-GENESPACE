@@ -69,7 +69,8 @@ fi
 
 mkdir -p ${out_dir}/${bed_dir} ${out_dir}/${pep_dir}
 
-make_peptide_files() {
+# function to keep primary isoform only from annotation, extract cbs and convert to peptide and concert gff to bed
+make_files() {
 
     progenitor=$1
     gff_file=$(find $in_dir/progenitor/$progenitor -name "*gff")
@@ -78,29 +79,17 @@ make_peptide_files() {
     primary_iso_gff=${out_dir}/${pep_dir}/${progenitor}_primary.gff
     primary_iso_pep_fa=${out_dir}/${pep_dir}/${progenitor}.fa
 
-    agat_sp_keep_longest_isoform -gff $gff_file -o primary_iso
+    agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff
 
-    gffread $primary_iso -g $fa_file -J -E -y $primary_iso_pep_fa
+    gffread $primary_iso_gff -g $fa_file -J -E -y $primary_iso_pep_fa
 
-}
-
-make_bed_files() {
-
-    progenitor=$1
-    gff_file=$(find $in_dir/progenitor/$progenitor -name "*gff")
-    fa_file=$(find $in_dir/progenitor/$progenitor -name "*fa")
-
-    gff2bed < $gff_file > ${out_dir}/${bed_dir}/${progenitor}.bed
+    gff2bed <  $primary_iso_gff > ${out_dir}/${bed_dir}/${progenitor}.bed
 
 }
 
 
 # export the function & variables
-export -f make_peptide_files
-export -f make_bed_files
+export -f make_files
 
 # Make the files
-wkd=$(pwd)
-ls $wkd
-ls $in_dir/progenitor | xargs -I {} bash -c 'make_peptide_files "{}"'
-ls $in_dir/progenitor | xargs -I {} bash -c 'make_bed_files "{}"'
+ls $in_dir/progenitor | xargs -I {} bash -c 'make_files "{}"'

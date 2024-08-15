@@ -31,11 +31,11 @@ SCRIPTS_DIR = os.path.normpath(config["SCRIPTS"])
 rule parse_genespace_input:
     input:
         input_dir=f"{INPUT_DIR}",
-        output_dir=f"{OUTPUT_DIR}",
     output:
         peptide_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir/peptide"),
         bed_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir/bed"), # add temp() after
     params:
+        output_dir=f"{OUTPUT_DIR}",
         peptide_dir="genespace/input_dir/peptide",
         bed_dir="genespace/input_dir/bed",
         scripts=f"{SCRIPTS_DIR}"
@@ -44,7 +44,7 @@ rule parse_genespace_input:
     conda:
         "../envs/genespace.yaml",
     shell:
-        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {input.output_dir} -p {params.peptide_dir} -b {params.bed_dir}" 
+        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {params.output_dir} -p {params.peptide_dir} -b {params.bed_dir}" 
 
 
 rule install_genespace:
