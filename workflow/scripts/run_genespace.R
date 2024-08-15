@@ -1,5 +1,3 @@
-## Install GENESPACE from github
-cat(getwd())
 library(devtools)
 
 if (!requireNamespace("GENESPACE", quietly = TRUE))

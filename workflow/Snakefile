@@ -67,9 +67,7 @@ rule parse_genespace_input:
 
 rule install_MCScanX:
     input:
-        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/github_directory",
-    params:
-        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/",
+        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX",
     log:
         f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
     conda:
@@ -80,7 +78,7 @@ rule install_MCScanX:
 
 rule download_MCScanX:
     output:
-        mc_scan_dir=directory(f"{OUTPUT_DIR}/genespace/MCScanX/github_directory"),
+        mc_scan_dir=directory(f"{OUTPUT_DIR}/genespace/MCScanX"),
     log:
         f"{OUTPUT_DIR}/logs/genespace/MCScanX/MCScanX_dowload.log",
     conda:
