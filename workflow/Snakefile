@@ -24,32 +24,36 @@ if len(config) == 0:
 
 OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
 INPUT_DIR = os.path.normpath(config["INPUT"])
-
+SCRIPTS_DIR = os.path.normpath(config["SCRIPTS"])
 
 
 
 rule parse_genespace_input:
     input:
-        f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
+        input_dir=f"{INPUT_DIR}",
+        output_dir=f"{OUTPUT_DIR}",
+    output:
+        peptide_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir/peptide"),
+        bed_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir/bed"), # add temp() after
     params:
-        scripts=SCRIPTS_DIR,
+        peptide_dir="genespace/input_dir/peptide",
+        bed_dir="genespace/input_dir/bed",
+        scripts=f"{SCRIPTS_DIR}"
     log:
-        f"{OUTPUT_DIR}/logs/genespace/genespace.log",
+        f"{OUTPUT_DIR}/logs/genespace/parse_genespace_input.log",
     conda:
-        "../envs/genespace.yaml"
-    script:
-        "scripts/install_genespace.R" 
+        "../envs/genespace.yaml",
+    shell:
+        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {input.output_dir} -p {params.peptide_dir} -b {params.bed_dir}" 
 
 
 rule install_genespace:
     input:
         f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
-    params:
-        scripts=SCRIPTS_DIR,
     log:
-        f"{OUTPUT_DIR}/logs/genespace/genespace.log",
+        f"{OUTPUT_DIR}/logs/genespace/install_genespace.log",
     conda:
-        "../envs/genespace.yaml"
+        "../envs/genespace.yaml",
     script:
         "scripts/install_genespace.R" 
 
@@ -59,11 +63,11 @@ rule install_MCScanX:
     input:
         mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/github_directory",
     params:
-        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/"
+        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/",
     log:
         f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
     conda:
-        "../envs/genespace.yaml"
+        "../envs/genespace.yaml",
     shell:
         "make -C {input.mc_scan_dir}" 
 

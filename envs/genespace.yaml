@@ -4,6 +4,7 @@ channels:
   - defaults
 dependencies:
   - r-base=4.3
+  - bedops=2.4.41
   - orthofinder=2.5.5
   - gffread=0.12.7
   - r-devtools=2.4.5
