@@ -24,7 +24,7 @@ if len(config) == 0:
 
 OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
 INPUT_DIR = os.path.normpath(config["INPUT"])
-SCRIPTS_DIR = os.path.normpath(config["SCRIPTS"])
+SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # Was defined in config before. Is there a reason for that?
 N_PROG = config["N_PROGENITORS"]
 genespace_parse_threads= N_PROG if N_PROG < workflow.cores else 1 # Just in case more than 2 progenitors.
 
@@ -32,6 +32,23 @@ rule all:
     input:
         genespace_input_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir"),
         genespace_insall_log=f"{OUTPUT_DIR}/logs/genespace/install_genespace.log",
+
+
+rule run_genespace:
+    input:
+        genespace_input_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir"),
+    output:
+        genespace_input_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir"),
+    params:
+        scripts=f"{SCRIPTS_DIR}"
+    log:
+        f"{OUTPUT_DIR}/logs/genespace/parse_genespace_input.log",
+    threads:genespace_parse_threads
+    conda:
+        "../envs/genespace.yaml",
+    shell:
+        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_input_dir} -l {log} -c {threads} 2> {log}" 
+
 
 rule parse_genespace_input:
     input:

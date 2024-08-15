@@ -136,7 +136,7 @@ make_files() {
             if ($4 in dict) {
                 $4 = dict[$4];
             }
-            print $0 >> bed;
+            print $1 "\t" $2 "\t" $3 "\t" $4  >> bed;
 
         }' ${tmp_primary_iso_pep_fa} ${tmp_bed}
 

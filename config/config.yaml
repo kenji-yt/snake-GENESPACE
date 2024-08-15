@@ -1,5 +1,4 @@
 INPUT: .test/data
-OUTPUT: results/
-SCRIPTS: workflow/scripts/
-N_PROGENITORS: 2
+OUTPUT: results/ 
+N_PROGENITORS: 2 # Never tested for more that 2 
 
