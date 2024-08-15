@@ -7,6 +7,7 @@ dependencies:
   - bedops=2.4.41
   - orthofinder=2.5.5
   - gffread=0.12.7
+  - agat=1.4.0
   - r-devtools=2.4.5
   - r-withr=3.0.1
   - r-mass=7.3.60.0.1

@@ -74,8 +74,13 @@ make_peptide_files() {
     progenitor=$1
     gff_file=$(find $in_dir/progenitor/$progenitor -name "*gff")
     fa_file=$(find $in_dir/progenitor/$progenitor -name "*fa")
+    
+    primary_iso_gff=${out_dir}/${pep_dir}/${progenitor}_primary.gff
+    primary_iso_pep_fa=${out_dir}/${pep_dir}/${progenitor}.fa
 
-    gffread $gff_file -g $fa_file -J -E -y ${out_dir}/${pep_dir}/${progenitor}.fa
+    agat_sp_keep_longest_isoform -gff $gff_file -o primary_iso
+
+    gffread $primary_iso -g $fa_file -J -E -y $primary_iso_pep_fa
 
 }
 
