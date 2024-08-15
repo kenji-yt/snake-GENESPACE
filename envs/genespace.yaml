@@ -3,16 +3,27 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - git=2.45.2
   - r-base=4.3
   - perl=5.32.1
-  - bedops=2.4.41
   - orthofinder=2.5.5
-  - gffread=0.12.7
   - agat=1.4.0
   - r-devtools=2.4.5
-  - r-withr=3.0.1
-  - r-mass=7.3.60.0.1
   - bioconductor-Biostrings=2.70
   - bioconductor-rtracklayer=1.62
   - make=4.2.1
   - tar=1.32
+  - r-mass=7.3.60.0.1
+  - r-data.table=1.15.4
+  - r-dbscan=1.1_3
+  - r-igraph=0.10.13
+  - r-r.utils=2.12.3
+  - r-ggplot2=3.5.1
+  - r-knitr=1.48
+  - r-rmarkdown=1.13
+  - r-ape=5.8
+  - bioconductor-iranges=2.36
+  - bioconductor-GenomicRanges=1.54.1
+  - bioconductor-biocgenerics=0.48.1
+  - bioconductor-genomeinfodb=1.38.1
+  - r-gridExtra=2.3

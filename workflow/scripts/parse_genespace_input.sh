@@ -58,7 +58,7 @@ if test -z "$cores"; then
 fi
 
 log_dir=$(dirname $log_file )
-agat_log_dir=${log_dir}/agat
+agat_log_file=${log_dir}/agat.log
 
 bed_dir="${out_dir}/bed"
 pep_dir="${out_dir}/peptide"
@@ -66,7 +66,7 @@ export in_dir=$in_dir
 export out_dir=$out_dir
 export bed_dir=$bed_dir
 export pep_dir=$pep_dir
-export agat_log_dir=$agat_log_dir
+export agat_log_file=$agat_log_file
 
 
 # Function to delete tmp files after premature interuption
@@ -152,4 +152,4 @@ ls ${in_dir}/progenitor | xargs -I {}  -P ${cores} bash -c 'make_files "{}"'
 
 # Delete temporary files & move agat logs.
 find ${out_dir} -name ".tmp*" | xargs rm 
-find . -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
+find . -name "*.agat.log" | xargs -I {} cat {} >> ${agat_log_file}

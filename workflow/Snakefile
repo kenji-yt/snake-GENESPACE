@@ -30,31 +30,29 @@ genespace_parse_threads= N_PROG if N_PROG < workflow.cores else 1 # Just in case
 
 rule all:
     input:
-        genespace_input_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir"),
-        genespace_insall_log=f"{OUTPUT_DIR}/logs/genespace/install_genespace.log",
+        genespace_run_log=f"{OUTPUT_DIR}/logs/genespace/genespace_run.log",
 
 
 rule run_genespace:
     input:
-        genespace_input_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir"),
-    output:
-        genespace_input_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir"),
+        mc_scan_install_log=f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log", 
+        genespace_run_dir=directory(f"{OUTPUT_DIR}/genespace/run_dir"),
     params:
-        scripts=f"{SCRIPTS_DIR}"
+        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/",
     log:
-        f"{OUTPUT_DIR}/logs/genespace/parse_genespace_input.log",
-    threads:genespace_parse_threads
+        f"{OUTPUT_DIR}/logs/genespace/genespace_run.log",
+    threads:workflow.cores
     conda:
         "../envs/genespace.yaml",
-    shell:
-        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_input_dir} -l {log} -c {threads} 2> {log}" 
+    script:
+        "scripts/run_genespace.R" 
 
 
 rule parse_genespace_input:
     input:
         input_dir=f"{INPUT_DIR}",
     output:
-        genespace_input_dir=directory(f"{OUTPUT_DIR}/genespace/input_dir"),
+        genespace_run_dir=directory(f"{OUTPUT_DIR}/genespace/run_dir"),
     params:
         scripts=f"{SCRIPTS_DIR}"
     log:
@@ -63,18 +61,7 @@ rule parse_genespace_input:
     conda:
         "../envs/genespace.yaml",
     shell:
-        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_input_dir} -l {log} -c {threads} 2> {log}" 
-
-
-rule install_genespace:
-    input:
-        f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
-    log:
-        f"{OUTPUT_DIR}/logs/genespace/install_genespace.log",
-    conda:
-        "../envs/genespace.yaml",
-    script:
-        "scripts/install_genespace.R" 
+        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_run_dir} -l {log} -c {threads} 2> {log}" 
 
 
 
@@ -96,6 +83,8 @@ rule download_MCScanX:
         mc_scan_dir=directory(f"{OUTPUT_DIR}/genespace/MCScanX/github_directory"),
     log:
         f"{OUTPUT_DIR}/logs/genespace/MCScanX/MCScanX_dowload.log",
+    conda:
+        "../envs/genespace.yaml",
     shell:
         "git clone https://github.com/wyp1125/MCScanX {output.mc_scan_dir}"
 
