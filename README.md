@@ -6,26 +6,26 @@
 
 A Snakemake workflow to automate and facilitate identification of synteny and orthology using GENESPACE. 
 
-The aim of this workflow is to make the use of GENESPACE easier. It does so by automating the most annoying parts of a GENESPACE analysis, namely:
-    - Input data formating
-    - Software instalation
+The aim of this workflow is to make the use of GENESPACE easier. It does so by automating the most annoying parts of a GENESPACE analysis, namely:\n
+\t- Input data formating\n
+\t- Software instalation\n
 
-Input data formating is the "trickiest part of running GENESPACE" (see [GENESPACE section 3](https://github.com/jtlovell/GENESPACE)). With the snake-GENESPACE workflow you can have your data as GFF structural annotations and fasta genome assemblies. The workflow automatically:
-    - Converts the GFF file into a bed format.  
-    - Extracts and translates coding sequences into peptide fasta files. 
-    - Renames each bed and fasta entry to have the exact same (gene) name. 
+Input data formating is the "trickiest part of running GENESPACE" (see [GENESPACE section 3](https://github.com/jtlovell/GENESPACE)). With the snake-GENESPACE workflow you can have your data as GFF structural annotations and fasta genome assemblies. The workflow automatically:\n
+\t- Converts the GFF file into a bed format.\n  
+\t- Extracts and translates coding sequences into peptide fasta files.\n 
+\t- Renames each bed and fasta entry to have the exact same (gene) name.\n 
 This is done with the brilliant [AGAT suite of tools](https://github.com/NBISweden/AGAT) and some custom awk script. 
 
 GENESPACE also depends on the stand alone tools MCScanX and Orthofinder as well as a number of R-packages. It can be frustrating to manage installation of all the dependecies. Snakemake makes such dependencies easy to deal with by installing them automatically in a conda environment. All this means is that you just need to [install Snakemake via Conda](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) and to git clone this repository to have all the GENESPACE requirement met. 
 
 
-
-
 ## Usage
 
-The usage of this workflow is described in the [Snakemake Workflow Catalog](https://snakemake.github.io/snakemake-workflow-catalog/?usage=<owner>%2F<repo>).
-
-If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) <repo>sitory and its DOI (see above).
+- Install snakemake via conda.\n
+- git clone snake-GENESPACE.\n
+- format input directory.\n
+- modify config file.\n
+- run\n
 
 # TODO
 
