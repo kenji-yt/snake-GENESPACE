@@ -8,6 +8,7 @@ dependencies:
   - perl=5.32.1
   - orthofinder=2.5.5
   - agat=1.4.0
+  - fastx_toolkit=0.0.14
   - r-devtools=2.4.5
   - bioconductor-Biostrings=2.70
   - bioconductor-rtracklayer=1.62

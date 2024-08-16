@@ -59,7 +59,7 @@ rule parse_genespace_input:
     params:
         scripts=f"{SCRIPTS_DIR}"
     log:
-        f"{OUTPUT_DIR}/logs/genespace/parse_genespace_input.log",
+        f"{OUTPUT_DIR}/logs/genespace/parse_genespace_input.log", # Nothing going it 2> due to agat
     threads:genespace_parse_threads
     conda:
         "../envs/genespace.yaml",

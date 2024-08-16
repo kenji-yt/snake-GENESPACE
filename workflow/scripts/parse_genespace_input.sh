@@ -110,6 +110,16 @@ create_files() {
         gff_file=$(find $in_dir/$progenitor \( -name "*.gff" -o -name "*.gff3" \))
         fa_file=$(find $in_dir/$progenitor \( -name "*.fa" -o -name "*.fasta" -o -name "*.fq" -o -name "*.fna" \))
 
+        # To avoid https://github.com/NBISweden/AGAT/issues/56
+        max_line_len=$(wc -L ${fa_file} | awk '{print $1}') 
+
+        if [ "${max_line_len}" -gt 65536 ]; then
+            
+            fasta_formatter -i $fa_file -w 60 > ${pep_dir}/.tmp_multi_line_${progenitor}.fa
+            fa_file=${pep_dir}/.tmp_multi_line_${progenitor}.fa
+
+        fi
+
         primary_iso_gff=${pep_dir}/.tmp_${progenitor}_primary.gff
 
         tmp_primary_iso_pep_fa=${pep_dir}/.tmp_${progenitor}.fa
@@ -170,4 +180,4 @@ ls ${in_dir} | xargs -I {}  -P ${cores} bash -c 'make_create "{}"'
 log_dir=$(dirname ${log_file})
 agat_log_dir=${log_dir}/agat_logs
 find . -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
-find ${out_dir}/run_dir -name ".tmp*" | xargs rm 
+find ${out_dir} -name ".tmp*" | xargs -I {} rm {}
