@@ -174,7 +174,7 @@ create_files() {
 export -f create_files
 
 # Make the files
-ls ${in_dir} | xargs -I {}  -P ${cores} bash -c 'make_create "{}"'
+ls ${in_dir} | xargs -I {}  -P ${cores} bash -c 'create_files "{}"'
 
 # Delete temporary files & move agat logs.
 log_dir=$(dirname ${log_file})
