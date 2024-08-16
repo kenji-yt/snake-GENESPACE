@@ -39,7 +39,7 @@ rule all:
 rule run_genespace:
     input:
         mc_scan_install_log=f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log", 
-        genespace_run_dir=directory(f"{OUTPUT_DIR}/genespace/run_dir"),
+        genespace_run_dir=f"{OUTPUT_DIR}/genespace/run_dir",
     params:
         mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/",
     log:
