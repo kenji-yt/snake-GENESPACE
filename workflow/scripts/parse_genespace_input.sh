@@ -92,7 +92,7 @@ mkdir -p ${bed_dir} ${pep_dir} ${agat_log_dir}
 
 # function to keep primary isoform only from annotation, extract cbs and convert to peptide and convert gff to bed.
 # if bed and peptide file already present it copies them to the output directory.
-make_files() {
+create_files() {
 
     directory=$1 
     
@@ -161,10 +161,10 @@ make_files() {
 
 
 # export the function & variables
-export -f make_files
+export -f create_files
 
 # Make the files
-ls ${in_dir} | xargs -I {}  -P ${cores} bash -c 'make_files "{}"'
+ls ${in_dir} | xargs -I {}  -P ${cores} bash -c 'make_create "{}"'
 
 # Delete temporary files & move agat logs.
 log_dir=$(dirname ${log_file})
