@@ -93,8 +93,8 @@ mkdir -p ${bed_dir} ${pep_dir} ${agat_log_dir}
 make_files() {
 
     progenitor=$1
-    gff_file=$(find $in_dir/progenitor/$progenitor -name "*gff")
-    fa_file=$(find $in_dir/progenitor/$progenitor -name "*fa")
+    gff_file=$(find $in_dir/$progenitor -name "*gff")
+    fa_file=$(find $in_dir/$progenitor -name "*fa")
 
     primary_iso_gff=${pep_dir}/.tmp_${progenitor}_primary.gff
 
@@ -147,7 +147,7 @@ make_files() {
 export -f make_files
 
 # Make the files
-ls ${in_dir}/progenitor | xargs -I {}  -P ${cores} bash -c 'make_files "{}"'
+ls ${in_dir} | xargs -I {}  -P ${cores} bash -c 'make_files "{}"'
 
 # Delete temporary files & move agat logs.
 find ${out_dir} -name ".tmp*" | xargs rm 

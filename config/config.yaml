@@ -1,4 +1,4 @@
 INPUT: .test/data
 OUTPUT: results/ 
-N_PROGENITORS: 2 # Never tested for more that 2 
+NUMB_SPECIES: 2 
 

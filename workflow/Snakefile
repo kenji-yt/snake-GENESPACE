@@ -24,9 +24,9 @@ if len(config) == 0:
 
 OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
 INPUT_DIR = os.path.normpath(config["INPUT"])
-SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # Was defined in config before. Is there a reason for that?
-N_PROG = config["N_PROGENITORS"]
-genespace_parse_threads= N_PROG if N_PROG < workflow.cores else 1 # Just in case more than 2 progenitors.
+SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
+N_SPECIES = config["NUMB_SPECIES"]
+genespace_parse_threads= N_SPECIES if N_SPECIES < workflow.cores else 1 
 
 
 ## Rules
