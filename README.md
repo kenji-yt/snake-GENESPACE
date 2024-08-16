@@ -13,7 +13,7 @@ The aim of this workflow is to make the use of GENESPACE easier. It does so by a
 
 Input data formating is the "trickiest part of running GENESPACE" (see [GENESPACE](https://github.com/jtlovell/GENESPACE) section 3). With the snake-GENESPACE workflow you can have your data as GFF structural annotations and fasta genome assemblies. The workflow automatically:
 
-- Converts the GFF file into a bed format.
+- Converts the GFF file into bed format.
 - Extracts and translates coding sequences into peptide fasta files.
 - Renames each bed and fasta entry to have the exact same (gene) name.
 
@@ -24,11 +24,11 @@ GENESPACE also depends on the stand alone tools MCScanX and Orthofinder as well 
 
 ## Usage
 
-- Install snakemake via conda.\n
-- git clone snake-GENESPACE.\n
-- format input directory.\n
-- modify config file.\n
-- run\n
+- Install snakemake via conda.
+- git clone snake-GENESPACE.
+- format input directory.
+- modify config file.
+- run (Do not be alarmed if the messages printed to the terminal are confusing. This is normal since multiple processes print out at the same time. If you want to know what happened check out the log files in the log directory within your specified output directory). 
 
 # TODO
 

@@ -83,63 +83,80 @@ trap delete_file INT
 
 #----------------------------------------------#
 #----------------------------------------------#
-#------ Extract Primary Peptide Sequence ------#
+#------- Make GENESPACE input directory -------#
 #----------------------------------------------#
 #----------------------------------------------#
+
 
 mkdir -p ${bed_dir} ${pep_dir} ${agat_log_dir}
 
-# function to keep primary isoform only from annotation, extract cbs and convert to peptide and concert gff to bed
+# function to keep primary isoform only from annotation, extract cbs and convert to peptide and convert gff to bed.
+# if bed and peptide file already present it copies them to the output directory.
 make_files() {
 
-    progenitor=$1
-    gff_file=$(find $in_dir/$progenitor -name "*gff")
-    fa_file=$(find $in_dir/$progenitor -name "*fa")
-
-    primary_iso_gff=${pep_dir}/.tmp_${progenitor}_primary.gff
-
-    tmp_primary_iso_pep_fa=${pep_dir}/.tmp_${progenitor}.fa
-    tmp_bed=${bed_dir}/.tmp_${progenitor}.bed
-
-    primary_iso_pep_fa=${pep_dir}/${progenitor}.fa
-    primary_iso_bed=${bed_dir}/${progenitor}.bed
-
-    agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff
-
-    agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa
-
-    agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed
+    directory=$1 
     
-    echo "Renaming primary transcripts after gene name for ${progenitor}."
-    
-    awk -v peptide="${primary_iso_pep_fa}" -v bed="${primary_iso_bed}" '
+    if [ "${directory}" == "bed" ]; then
+
+        cp ${directory}/* ${bed_dir}/
+
+    elif [ "${directory}" == "peptide" ]; then
+
+        cp ${directory}/* ${pep_dir}/
+
+    else 
         
-        FNR==NR {
+        progenitor=$1
+        gff_file=$(find $in_dir/$progenitor \( -name "*.gff" -o -name "*.gff3" \))
+        fa_file=$(find $in_dir/$progenitor \( -name "*.fa" -o -name "*.fasta" -o -name "*.fq" -o -name "*.fna" \))
 
-            if( $1 ~ /^>/ ){
-                key = substr($1, 2);
-                match($2, /^gene=(.*)$/, arr);
-                value = arr[1];
-                dict[key] = value;
-                gene_name = ">" value;
-                print gene_name >> peptide;
+        primary_iso_gff=${pep_dir}/.tmp_${progenitor}_primary.gff
+
+        tmp_primary_iso_pep_fa=${pep_dir}/.tmp_${progenitor}.fa
+        tmp_bed=${bed_dir}/.tmp_${progenitor}.bed
+
+        primary_iso_pep_fa=${pep_dir}/${progenitor}.fa
+        primary_iso_bed=${bed_dir}/${progenitor}.bed
+
+        agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff
+
+        agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa
+
+        agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed
+        
+        echo "Renaming primary transcripts after gene name for ${progenitor}."
+        
+        awk -v peptide="${primary_iso_pep_fa}" -v bed="${primary_iso_bed}" '
+            
+            FNR==NR {
+
+                if( $1 ~ /^>/ ){
+                    key = substr($1, 2);
+                    match($2, /^gene=(.*)$/, arr);
+                    value = arr[1];
+                    dict[key] = value;
+                    gene_name = ">" value;
+                    print gene_name >> peptide;
+                    next;
+                } else {
+                    print $0 >> peptide;
+                }
                 next;
-            } else {
-                print $0 >> peptide;
             }
-            next;
-        }
 
-        {
+            {
 
-            if ($4 in dict) {
-                $4 = dict[$4];
-            }
-            print $1 "\t" $2 "\t" $3 "\t" $4  >> bed;
+                if ($4 in dict) {
+                    $4 = dict[$4];
+                }
+                print $1 "\t" $2 "\t" $3 "\t" $4  >> bed;
 
-        }' ${tmp_primary_iso_pep_fa} ${tmp_bed}
+            }' ${tmp_primary_iso_pep_fa} ${tmp_bed}
 
-    echo "Finished renaming for ${progenitor}."
+        echo "Finished renaming for ${progenitor}."
+
+    fi
+
 }
 
 
@@ -150,6 +167,7 @@ export -f make_files
 ls ${in_dir} | xargs -I {}  -P ${cores} bash -c 'make_files "{}"'
 
 # Delete temporary files & move agat logs.
-find ${out_dir} -name ".tmp*" | xargs rm 
-find . -name "*.agat.log" | xargs -I {} cat {} >> ${log_file}
-find . -name "*.agat.log" | xargs -I {} rm {}
+log_dir=$(dirname ${log_file})
+agat_log_dir=${log_dir}/agat_logs
+find . -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
+find ${out_dir}/run_dir -name ".tmp*" | xargs rm 
