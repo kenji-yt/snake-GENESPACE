@@ -28,6 +28,9 @@ SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # Was defined in config befo
 N_PROG = config["N_PROGENITORS"]
 genespace_parse_threads= N_PROG if N_PROG < workflow.cores else 1 # Just in case more than 2 progenitors.
 
+
+## Rules
+
 rule all:
     input:
         genespace_run_log=f"{OUTPUT_DIR}/logs/genespace/genespace_run.log",
