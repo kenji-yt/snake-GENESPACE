@@ -1,4 +1,4 @@
 INPUT: .test/data
 OUTPUT: results/ 
-NUMB_SPECIES: 2 
+NUMB_SPECIES_TO_PARSE: 2 ### SUperfluous, get rid 
 

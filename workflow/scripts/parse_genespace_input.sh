@@ -96,6 +96,71 @@ create_files() {
 
     directory=$1 
     
+
+    
+    progenitor=$1
+    gff_file=$(find $in_dir/$progenitor \( -name "*.gff" -o -name "*.gff3" \))
+    fa_file=$(find $in_dir/$progenitor \( -name "*.fa" -o -name "*.fasta" -o -name "*.fq" -o -name "*.fna" \))
+
+    # To avoid https://github.com/NBISweden/AGAT/issues/56
+    max_line_len=$(wc -L ${fa_file} | awk '{print $1}') 
+
+    if [ "${max_line_len}" -gt 65536 ]; then
+        
+        fasta_formatter -i $fa_file -w 60 > ${pep_dir}/.tmp_multi_line_${progenitor}.fa
+        fa_file=${pep_dir}/.tmp_multi_line_${progenitor}.fa
+
+    fi
+
+    primary_iso_gff=${pep_dir}/.tmp_${progenitor}_primary.gff
+
+    tmp_primary_iso_pep_fa=${pep_dir}/.tmp_${progenitor}.fa
+    tmp_bed=${bed_dir}/.tmp_${progenitor}.bed
+
+    primary_iso_pep_fa=${pep_dir}/${progenitor}.fa
+    primary_iso_bed=${bed_dir}/${progenitor}.bed
+
+    agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff
+
+    agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa
+
+    agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed
+    
+    echo "Renaming primary transcripts after gene name for ${progenitor}."
+    
+    awk -v peptide="${primary_iso_pep_fa}" -v bed="${primary_iso_bed}" '
+        
+        FNR==NR {
+
+            if( $1 ~ /^>/ ){
+                key = substr($1, 2);
+                match($2, /^gene=(.*)$/, arr);
+                value = arr[1];
+                dict[key] = value;
+                gene_name = ">" value;
+                print gene_name >> peptide;
+                next;
+            } else {
+                print $0 >> peptide;
+            }
+            next;
+        }
+
+        {
+
+            if ($4 in dict) {
+                $4 = dict[$4];
+                print $1 "\t" $2 "\t" $3 "\t" $4  >> bed;
+            }
+
+        }' ${tmp_primary_iso_pep_fa} ${tmp_bed}
+
+    echo "Finished renaming for ${progenitor}."
+
+}
+
+move_input_files(){
+
     if [ "${directory}" == "bed" ]; then
 
         cp ${directory}/* ${bed_dir}/
@@ -104,77 +169,18 @@ create_files() {
 
         cp ${directory}/* ${pep_dir}/
 
-    else 
-        
-        progenitor=$1
-        gff_file=$(find $in_dir/$progenitor \( -name "*.gff" -o -name "*.gff3" \))
-        fa_file=$(find $in_dir/$progenitor \( -name "*.fa" -o -name "*.fasta" -o -name "*.fq" -o -name "*.fna" \))
-
-        # To avoid https://github.com/NBISweden/AGAT/issues/56
-        max_line_len=$(wc -L ${fa_file} | awk '{print $1}') 
-
-        if [ "${max_line_len}" -gt 65536 ]; then
-            
-            fasta_formatter -i $fa_file -w 60 > ${pep_dir}/.tmp_multi_line_${progenitor}.fa
-            fa_file=${pep_dir}/.tmp_multi_line_${progenitor}.fa
-
-        fi
-
-        primary_iso_gff=${pep_dir}/.tmp_${progenitor}_primary.gff
-
-        tmp_primary_iso_pep_fa=${pep_dir}/.tmp_${progenitor}.fa
-        tmp_bed=${bed_dir}/.tmp_${progenitor}.bed
-
-        primary_iso_pep_fa=${pep_dir}/${progenitor}.fa
-        primary_iso_bed=${bed_dir}/${progenitor}.bed
-
-        agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff
-
-        agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa
-
-        agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed
-        
-        echo "Renaming primary transcripts after gene name for ${progenitor}."
-        
-        awk -v peptide="${primary_iso_pep_fa}" -v bed="${primary_iso_bed}" '
-            
-            FNR==NR {
-
-                if( $1 ~ /^>/ ){
-                    key = substr($1, 2);
-                    match($2, /^gene=(.*)$/, arr);
-                    value = arr[1];
-                    dict[key] = value;
-                    gene_name = ">" value;
-                    print gene_name >> peptide;
-                    next;
-                } else {
-                    print $0 >> peptide;
-                }
-                next;
-            }
-
-            {
-
-                if ($4 in dict) {
-                    $4 = dict[$4];
-                }
-                print $1 "\t" $2 "\t" $3 "\t" $4  >> bed;
-
-            }' ${tmp_primary_iso_pep_fa} ${tmp_bed}
-
-        echo "Finished renaming for ${progenitor}."
-
     fi
 
 }
 
-
 # export the function & variables
 export -f create_files
+export -f move_input_files
 
 # Make the files
-ls ${in_dir} | xargs -I {}  -P ${cores} bash -c 'create_files "{}"'
+ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'create_files "{}"'
+ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
+
 
 # Delete temporary files & move agat logs.
 log_dir=$(dirname ${log_file})

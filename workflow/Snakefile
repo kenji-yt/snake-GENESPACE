@@ -25,8 +25,8 @@ if len(config) == 0:
 OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
 INPUT_DIR = os.path.normpath(config["INPUT"])
 SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
-N_SPECIES = config["NUMB_SPECIES"]
-genespace_parse_threads= N_SPECIES if N_SPECIES < workflow.cores else 1 
+N_SPECIES_TO_PARSE = config["NUMB_SPECIES_TO_PARSE"]
+genespace_parse_threads= N_SPECIES_TO_PARSE if N_SPECIES_TO_PARSE < workflow.cores else 1 
 
 
 ## Rules
