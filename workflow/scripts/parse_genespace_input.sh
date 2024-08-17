@@ -94,10 +94,6 @@ mkdir -p ${bed_dir} ${pep_dir} ${agat_log_dir}
 # if bed and peptide file already present it copies them to the output directory.
 create_files() {
 
-    directory=$1 
-    
-
-    
     progenitor=$1
     gff_file=$(find $in_dir/$progenitor \( -name "*.gff" -o -name "*.gff3" \))
     fa_file=$(find $in_dir/$progenitor \( -name "*.fa" -o -name "*.fasta" -o -name "*.fq" -o -name "*.fna" \))
@@ -161,6 +157,8 @@ create_files() {
 
 move_input_files(){
 
+    directory=$1 
+    
     if [ "${directory}" == "bed" ]; then
 
         cp ${directory}/* ${bed_dir}/
