@@ -161,11 +161,11 @@ move_input_files(){
     
     if [ "${directory}" == "bed" ]; then
 
-        cp ${directory}/* ${bed_dir}/
+        cp ${in_dir}/${directory}/* ${bed_dir}/
 
     elif [ "${directory}" == "peptide" ]; then
 
-        cp ${directory}/* ${pep_dir}/
+        cp ${in_dir}/${directory}/* ${pep_dir}/
 
     fi
 
