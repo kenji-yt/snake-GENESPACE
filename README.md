@@ -44,15 +44,12 @@ Input_directory/
 ├── Species_1/
 │   ├── annotation.gff
 │   └── assembly.fa
-│  
 ├── Species_2/
 │   ├── annotation.gff
-│   └── assembly.fa
-│          
+│   └── assembly.fa       
 ├── peptide/
 │   ├── Species_3.fa
 │   └── Species_4.fa
-│
 -── bed/
    ├── Species_3.bed
    └── Species_4.bed
