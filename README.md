@@ -39,39 +39,24 @@ If you have some data already in the right format for GENESPACE just put your "b
 
 
 Your input directory should have the following structure:
-
+```
 Input_directory/
-
 ├── Species_1/
-
 │   ├── annotation.gff
-
 │   └── assembly.fa
-
 │  
-
 ├── Species_2/
-
 │   ├── annotation.gff
-
 │   └── assembly.fa
-
 │          
-
 ├── peptide/
-
 │   ├── Species_3.fa
-
 │   └── Species_4.fa
-
 │
-
 -── bed/
-
    ├── Species_3.bed
-
    └── Species_4.bed
-   
+```
 
 
 ## Analysis 
