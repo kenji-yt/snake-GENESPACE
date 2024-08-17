@@ -119,7 +119,7 @@ create_files() {
 
     primary_iso_pep_fa=${pep_dir}/${progenitor}.fa
     primary_iso_bed=${bed_dir}/${progenitor}.bed
-
+    
     agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff
 
     agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa
@@ -187,3 +187,4 @@ log_dir=$(dirname ${log_file})
 agat_log_dir=${log_dir}/agat_logs
 find . -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
 find ${out_dir} -name ".tmp*" | xargs -I {} rm {}
+

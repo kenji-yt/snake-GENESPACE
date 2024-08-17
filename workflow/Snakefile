@@ -25,8 +25,16 @@ if len(config) == 0:
 OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
 INPUT_DIR = os.path.normpath(config["INPUT"])
 SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
-N_SPECIES_TO_PARSE = config["NUMB_SPECIES_TO_PARSE"]
-genespace_parse_threads= N_SPECIES_TO_PARSE if N_SPECIES_TO_PARSE < workflow.cores else 1 
+
+## Define number of cores for parsing
+count = 0
+for item in os.listdir(f"{INPUT_DIR}"):
+    item_path = os.path.join(f"{INPUT_DIR}", item)
+    # Check if the item is a directory and not excluded
+    if os.path.isdir(item_path) and item not in ["beb", "peptide"]:
+        count += 1
+genespace_parse_threads = count if count < workflow.cores else workflow.cores
+
 
 
 ## Rules
