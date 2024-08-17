@@ -31,7 +31,7 @@ count = 0
 for item in os.listdir(f"{INPUT_DIR}"):
     item_path = os.path.join(f"{INPUT_DIR}", item)
     # Check if the item is a directory and not excluded
-    if os.path.isdir(item_path) and item not in ["beb", "peptide"]:
+    if os.path.isdir(item_path) and item not in ["bed", "peptide"]:
         count += 1
 genespace_parse_threads = count if count < workflow.cores else workflow.cores
 
