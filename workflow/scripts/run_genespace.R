@@ -1,3 +1,7 @@
+log_file <- file(snakemake@log[[1]], type="wt")
+
+sink(log, split=TRUE, append=TRUE)
+
 library(devtools)
 
 if (!requireNamespace("GENESPACE", quietly = TRUE))
@@ -11,3 +15,5 @@ gpar <- init_genespace(
   nCores= snakemake@threads)
 
 gpar <- run_genespace(gsParam = gpar,) 
+
+sink()

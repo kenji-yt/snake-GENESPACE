@@ -62,7 +62,7 @@ Once you have your input directory you just need to edit "snake-GENESPACE/config
 
 That's it, you are ready to run a GENEPSACE analysis. Just activate your conda environment where snakemake is installed (eg. "conda activate snakemake_env") and then, from within the "snake-GENESPACE/" directory run:
 ```
-snakemake --use-conda -cores N 
+snakemake --use-conda --cores N 
 ```
 Make sure to be in the conda directory with snakemake intalled and to replace N with the number of cores you wish to allocate to snakemake. 
 
