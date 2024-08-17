@@ -35,7 +35,7 @@ git clone https://github.com/kenji-yt/snake-GENESPACE.git
 
 The input to snake-GENESPACE is a directory. Inside it you should have one directory for each species (or genome). The name of the directory should be the species or genome name and will appear as such in the GENESPACE output figures. In these directories you should have **only** two files: a gff annotation and a fasta assembly. Name these files as you wish as long as they have one of the following extensions: "gff","gff3","fa","fasta","fq","fna". 
 
-If you have some data already in the right format for GENESPACE just put your "bed" and "peptide" directories within the snake-GENESPACE input directory. In brief, GENESPACE requires an annotation in bed format and a fasta file with peptide sequences. The gene or feature names in the bed file should match the sequence names in the fasta exactly. All bed files should be put in a directory called "bed" and all fasta files in a directory called "peptide". The name of each file should be the desired species (or genome) name and should be the same for corresponding bed and fasta. Getting data in this format is what snake-GENESPACE does using [AGAT](https://github.com/NBISweden/AGAT) and custom bash and awk script (see the create_files() function in "snake-GENESPACE/workflow/scripts/parse_genespace_input.sh"). 
+If you have some data already in the right format for GENESPACE just put your "bed" and "peptide" directories within the snake-GENESPACE input directory. In brief, GENESPACE requires an annotation in bed format and a fasta file with peptide sequences. The gene or feature names in the bed file should match the sequence names in the fasta exactly. All bed files should be put in a directory called "bed" and all fasta files in a directory called "peptide". The name of each file should be the desired species (or genome) name and should be the same for corresponding bed and fasta. Getting data in this format is what snake-GENESPACE does using [AGAT](https://github.com/NBISweden/AGAT) and custom bash and awk script (see "snake-GENESPACE/workflow/scripts/parse_genespace_input.sh"). 
 
 
 Your input directory should have the following structure:
@@ -62,8 +62,8 @@ Once you have your input directory you just need to edit "snake-GENESPACE/config
 
 That's it, you are ready to run a GENEPSACE analysis. Just activate your conda environment where snakemake is installed (eg. "conda activate snakemake_env") and then, from within the "snake-GENESPACE/" directory run:
 ```
-snakemake --use-conda -c <number_of_cores>
+snakemake --use-conda -cores N 
 ```
-(Replace <number_of_cores> with the number of cores you give the process. If unsure put 1). 
+Make sure to be in the conda directory with snakemake intalled and to replace N with the number of cores you wish to allocate to snakemake. 
 
-Extra: If you are new to snakemake you might find it weird to run the program from within its source directory. This is how snakemake works and it's nothing to worry about. Finally, do not be alarmed if the messages printed to the terminal are confusing. This is normal since multiple processes print out at the same time (if -c >1). If you want to know what happened check out the log files in the log directory within your specified output directory. 
+*Extra:* If you are new to snakemake you might find it weird to run the program from within its source directory. This is how snakemake works and it's nothing to worry about. Finally, do not be alarmed if the messages printed to the terminal are confusing. This is normal since multiple processes print out at the same time (if -c >1). If you want to know what happened check out the log files in the log directory within your specified output directory. 
