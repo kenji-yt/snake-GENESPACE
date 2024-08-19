@@ -21,10 +21,13 @@ if len(config) == 0:
 
 
 ## Parse config file
-
+# CAN USE CONFIG (config["foo"]) DIRECTLY IN RULES
 OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
 INPUT_DIR = os.path.normpath(config["INPUT"])
+# Dont use script dir but see sourcing in snakefiles and rules section. 
 SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
+# Maybe: Non-rule Python statements inside the module are also evaluated in that separate namespace.
+# But still will it (the HEAL workflow) have the scripts??? 
 
 ## Define number of cores for parsing
 count = 0
@@ -41,7 +44,7 @@ genespace_parse_threads = count if count < workflow.cores else workflow.cores
 
 rule all:
     input:
-        genespace_run_log=f"{OUTPUT_DIR}/logs/genespace/genespace_run.log",
+        genespace_run_log=f"{OUTPUT_DIR}/logs/genespace/genespace_run.log" 
 
 
 rule run_genespace:
@@ -71,7 +74,7 @@ rule parse_genespace_input:
     threads:genespace_parse_threads
     conda:
         "../envs/genespace.yaml",
-    shell:
+    shell: # CAN USE SCRIPTS and associative arrays actually. 
         "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_run_dir} -l {log} -c {threads}" 
 
 
