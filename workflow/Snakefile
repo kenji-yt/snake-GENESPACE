@@ -22,7 +22,6 @@ if len(config) == 0:
 
 ## Parse config file
 # CAN USE CONFIG (config["foo"]) DIRECTLY IN RULES
-OUTPUT_DIR = os.path.normpath(config["OUTPUT"])
 INPUT_DIR = os.path.normpath(config["INPUT"])
 # Dont use script dir but see sourcing in snakefiles and rules section. 
 SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
@@ -44,20 +43,20 @@ genespace_parse_threads = count if count < workflow.cores else workflow.cores
 
 rule all:
     input:
-        genespace_run_log=f"{OUTPUT_DIR}/logs/genespace/genespace_run.log" 
+        genespace_run_log="results/logs/genespace/genespace_run.log" 
 
 
 rule run_genespace:
     input:
-        mc_scan_install_log=f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log", 
-        genespace_run_dir=f"{OUTPUT_DIR}/genespace/run_dir",
+        mc_scan_install_log="results/logs/genespace/MCScanX/MScanX_install.log", 
+        genespace_run_dir="results/genespace/run_dir",
     params:
-        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX/",
+        mc_scan_dir="results/genespace/MCScanX/",
     log:
-        f"{OUTPUT_DIR}/logs/genespace/genespace_run.log",
+        "results/logs/genespace/genespace_run.log",
     threads:workflow.cores
     conda:
-        "../envs/genespace.yaml",
+        "envs/genespace.yaml",
     script:
         "scripts/run_genespace.R" 
 
@@ -66,14 +65,14 @@ rule parse_genespace_input:
     input:
         input_dir=f"{INPUT_DIR}",
     output:
-        genespace_run_dir=directory(f"{OUTPUT_DIR}/genespace/run_dir"),
+        genespace_run_dir=directory("results/genespace/run_dir"),
     params:
         scripts=f"{SCRIPTS_DIR}"
     log:
-        f"{OUTPUT_DIR}/logs/genespace/parse_genespace_input.log", # Nothing going it 2> due to agat
+        "results/logs/genespace/parse_genespace_input.log", # Nothing going it 2> due to agat
     threads:genespace_parse_threads
     conda:
-        "../envs/genespace.yaml",
+        "envs/genespace.yaml",
     shell: # CAN USE SCRIPTS and associative arrays actually. 
         "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_run_dir} -l {log} -c {threads}" 
 
@@ -81,22 +80,22 @@ rule parse_genespace_input:
 
 rule install_MCScanX:
     input:
-        mc_scan_dir=f"{OUTPUT_DIR}/genespace/MCScanX",
+        mc_scan_dir="results/genespace/MCScanX",
     log:
-        f"{OUTPUT_DIR}/logs/genespace/MCScanX/MScanX_install.log",
+        "results/logs/genespace/MCScanX/MScanX_install.log",
     conda:
-        "../envs/genespace.yaml",
+        "envs/genespace.yaml",
     shell:
         "make -C {input.mc_scan_dir}" 
 
 
 rule download_MCScanX:
     output:
-        mc_scan_dir=directory(f"{OUTPUT_DIR}/genespace/MCScanX"),
+        mc_scan_dir=directory("results/genespace/MCScanX"),
     log:
-        f"{OUTPUT_DIR}/logs/genespace/MCScanX/MCScanX_dowload.log",
+        "results/logs/genespace/MCScanX/MCScanX_dowload.log",
     conda:
-        "../envs/genespace.yaml",
+        "envs/genespace.yaml",
     shell:
         "git clone https://github.com/wyp1125/MCScanX {output.mc_scan_dir}"
 

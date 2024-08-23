@@ -96,7 +96,7 @@ create_files() {
 
     progenitor=$1
     gff_file=$(find $in_dir/$progenitor \( -name "*.gff" -o -name "*.gff3" \))
-    fa_file=$(find $in_dir/$progenitor \( -name "*.fa" -o -name "*.fasta" -o -name "*.fq" -o -name "*.fna" \))
+    fa_file=$(find $in_dir/$progenitor \( -name "*.fa" -o -name "*.fasta" -o -name "*.fq" -o -name "*.fna" -name "fastq" \))
 
     # To avoid https://github.com/NBISweden/AGAT/issues/56
     max_line_len=$(wc -L ${fa_file} | awk '{print $1}') 

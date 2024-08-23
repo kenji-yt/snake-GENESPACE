@@ -1,6 +1,4 @@
-log_file <- file(snakemake@log[[1]], type="wt")
-
-sink(log, split=TRUE, append=TRUE)
+sink(snakemake@log[[1]], split=TRUE, append=TRUE)
 
 library(devtools)
 
