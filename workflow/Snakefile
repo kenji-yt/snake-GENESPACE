@@ -14,7 +14,6 @@ if len(config) == 0:
 
         configfile: "config/config.yaml"
 
-
     else:
         sys.exit(
             f"Make sure there is a config.yaml file in {os.getcwd()} or specify one with the --configfile commandline parameter."
