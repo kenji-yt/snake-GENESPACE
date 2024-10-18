@@ -14,6 +14,7 @@ if len(config) == 0:
 
         configfile: "config/config.yaml"
 
+
     else:
         sys.exit(
             f"Make sure there is a config.yaml file in {os.getcwd()} or specify one with the --configfile commandline parameter."
@@ -23,10 +24,12 @@ if len(config) == 0:
 ## Parse config file
 # CAN USE CONFIG (config["foo"]) DIRECTLY IN RULES
 INPUT_DIR = os.path.normpath(config["INPUT"])
-# Dont use script dir but see sourcing in snakefiles and rules section. 
-SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
+# Dont use script dir but see sourcing in snakefiles and rules section.
+SCRIPTS_DIR = os.path.normpath(
+    "workflow/scripts/"
+)  # How to call the scripts during modularization?
 # Maybe: Non-rule Python statements inside the module are also evaluated in that separate namespace.
-# But still will it (the HEAL workflow) have the scripts??? 
+# But still will it (the HEAL workflow) have the scripts???
 
 ## Define number of cores for parsing
 count = 0
@@ -38,27 +41,27 @@ for item in os.listdir(f"{INPUT_DIR}"):
 genespace_parse_threads = count if count < workflow.cores else workflow.cores
 
 
-
 ## Rules
+
 
 rule all:
     input:
-        genespace_run_log="results/logs/genespace/genespace_run.log" 
+        genespace_run_log="results/logs/genespace/genespace_run.log",
 
 
 rule run_genespace:
     input:
-        mc_scan_install_log="results/logs/genespace/MCScanX/MScanX_install.log", 
+        mc_scan_install_log="results/logs/genespace/MCScanX/MScanX_install.log",
         genespace_run_dir="results/genespace/run_dir",
     params:
         mc_scan_dir="results/genespace/MCScanX/",
     log:
         "results/logs/genespace/genespace_run.log",
-    threads:workflow.cores
+    threads: workflow.cores
     conda:
-        "envs/genespace.yaml",
+        "envs/genespace.yaml"
     script:
-        "scripts/run_genespace.R" 
+        "scripts/run_genespace.R"
 
 
 rule parse_genespace_input:
@@ -67,15 +70,14 @@ rule parse_genespace_input:
     output:
         genespace_run_dir=directory("results/genespace/run_dir"),
     params:
-        scripts=f"{SCRIPTS_DIR}"
+        scripts=f"{SCRIPTS_DIR}",
     log:
-        "results/logs/genespace/parse_genespace_input.log", # Nothing going it 2> due to agat
-    threads:genespace_parse_threads
+        "results/logs/genespace/parse_genespace_input.log",  # Nothing going it 2> due to agat
+    threads: genespace_parse_threads
     conda:
-        "envs/genespace.yaml",
-    shell: # CAN USE SCRIPTS and associative arrays actually. 
-        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_run_dir} -l {log} -c {threads}" 
-
+        "envs/genespace.yaml"
+    shell:  # CAN USE SCRIPTS and associative arrays actually. 
+        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_run_dir} -l {log} -c {threads}"
 
 
 rule install_MCScanX:
@@ -84,9 +86,9 @@ rule install_MCScanX:
     log:
         "results/logs/genespace/MCScanX/MScanX_install.log",
     conda:
-        "envs/genespace.yaml",
+        "envs/genespace.yaml"
     shell:
-        "make -C {input.mc_scan_dir}" 
+        "make -C {input.mc_scan_dir}"
 
 
 rule download_MCScanX:
@@ -95,11 +97,6 @@ rule download_MCScanX:
     log:
         "results/logs/genespace/MCScanX/MCScanX_dowload.log",
     conda:
-        "envs/genespace.yaml",
+        "envs/genespace.yaml"
     shell:
         "git clone https://github.com/wyp1125/MCScanX {output.mc_scan_dir}"
-
-
-
-
-
