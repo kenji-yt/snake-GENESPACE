@@ -58,12 +58,12 @@ Input_directory/
 
 ## Analysis 
 
-Once you have your input directory you just need to edit "snake-GENESPACE/config/config.yaml". This file is used to tell snake-GENESPACE where the input directory is and where the output should be written to. So just replace the paths after "INPUT:" and "OUTPUT:" with the path to your input directory and the path to a new directory that will be created to house the outputs. Note that these paths should be either absolute or relative to the "snake-GENESPACE/" directory. 
+That's it, you are ready to run a GENEPSACE analysis. From within the "snake-GENESPACE/" directory run:
+```
+snakemake --use-conda --cores N --config INPUT='your/input/directory'
+```
+Make sure to have snakemake make installed, to replace 'your/input/directory' with the path to you input directory, N with the number of cores. If you installed snakemake in a conda environment make sure to active it (eg. "conda activate snakemake_env").  
 
-That's it, you are ready to run a GENEPSACE analysis. Just activate your conda environment where snakemake is installed (eg. "conda activate snakemake_env") and then, from within the "snake-GENESPACE/" directory run:
-```
-snakemake --use-conda --cores N 
-```
-Make sure to be in the conda directory with snakemake intalled and to replace N with the number of cores you wish to allocate to snakemake. 
+The outputs will now be generated in a results directory within the snake-GENESPACE directory. 
 
 *Extra:* If you are new to snakemake you might find it weird to run the program from within its source directory. This is how snakemake works and it's nothing to worry about. Finally, do not be alarmed if the messages printed to the terminal are confusing. This is normal since multiple processes print out at the same time (if -c >1). If you want to know what happened check out the log files in the log directory within your specified output directory. 
