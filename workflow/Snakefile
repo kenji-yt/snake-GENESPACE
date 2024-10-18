@@ -82,7 +82,7 @@ rule install_MCScanX:
     input:
         mc_scan_dir="results/genespace/MCScanX",
     log:
-        "results/logs/genespace/MCScanX/MScanX_install.log",
+        "results/logs/MCScanX/MScanX_install.log",
     conda:
         "envs/genespace.yaml",
     shell:
@@ -93,7 +93,7 @@ rule download_MCScanX:
     output:
         mc_scan_dir=directory("results/genespace/MCScanX"),
     log:
-        "results/logs/genespace/MCScanX/MCScanX_dowload.log",
+        "results/logs/MCScanX/MCScanX_dowload.log",
     conda:
         "envs/genespace.yaml",
     shell:

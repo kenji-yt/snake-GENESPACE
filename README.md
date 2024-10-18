@@ -1,7 +1,6 @@
 # `snake-GENESPACE`
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.3.0-brightgreen.svg)](https://snakemake.github.io)
-[![GitHub actions status](https://github.com/<owner>/<repo>/workflows/Tests/badge.svg?branch=main)](https://github.com/<owner>/<repo>/actions?query=branch%3Amain+workflow%3ATests)
 
 
 A Snakemake workflow to automate and facilitate identification of synteny and orthology using GENESPACE. 
@@ -40,7 +39,7 @@ If you have some data already in the right format for GENESPACE just put your "b
 
 Your input directory should have the following structure:
 ```
-Input_directory/
+input_directory/
 ├── Species_1/
 │   ├── annotation.gff
 │   └── assembly.fa
@@ -54,7 +53,7 @@ Input_directory/
     ├── Species_3.bed
     └── Species_4.bed
 ```
-
+At present, snake-GENESPACE does not provide any option to specify your own run parameters. This is because GENESPACE is said to cover a wide range of evolutionary scenarios under its default mode. If this is something that is really desired feel free to open an issue to request it. 
 
 ## Analysis 
 
@@ -62,7 +61,7 @@ That's it, you are ready to run a GENEPSACE analysis. From within the "snake-GEN
 ```
 snakemake --use-conda --cores N --config INPUT='your/input/directory'
 ```
-Make sure to have snakemake make installed, to replace 'your/input/directory' with the path to you input directory, N with the number of cores. If you installed snakemake in a conda environment make sure to active it (eg. "conda activate snakemake_env").  
+Make sure to have snakemake make installed, to replace 'your/input/directory' with the path to you input directory and 'N' with the number of cores you wish to allocate to the job. If you installed snakemake in a conda environment make sure to activate it (eg. "conda activate snakemake_env").  
 
 The outputs will now be generated in a results directory within the snake-GENESPACE directory. 
 

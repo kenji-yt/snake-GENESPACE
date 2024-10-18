@@ -13,7 +13,6 @@ dependencies: ###### SPLIT genespace env and MCScanX install env?
   - bioconductor-Biostrings=2.70
   - bioconductor-rtracklayer=1.62
   - make=4.2.1
-  - tar=1.32
   - r-mass=7.3.60.0.1
   - r-ggplot2=3.5.1
   - r-r.utils=2.12
