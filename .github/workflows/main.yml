@@ -46,11 +46,11 @@ jobs:
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 3 --config INPUT=.test/data"
+        args: "--use-conda --show-failed-logs --cores 3 --configfile .test/config.yaml"
 
     - name: Test report
       uses: snakemake/snakemake-github-action@v1.25.1
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        args: "--report report.zip --config INPUT=.test/data"
+        args: "--report report.zip --configfile .test/config.yaml"
