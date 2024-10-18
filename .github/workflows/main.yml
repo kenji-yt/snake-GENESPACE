@@ -29,7 +29,7 @@ jobs:
     - name: Lint workflow
       uses: snakemake/snakemake-github-action@v1.25.1
       with:
-        directory: .test
+        directory: .
         snakefile: workflow/Snakefile
         args: "--lint --configfile .test/config.yaml"
 
@@ -44,13 +44,13 @@ jobs:
     - name: Test workflow
       uses: snakemake/snakemake-github-action@v1.25.1
       with:
-        directory: .test
+        directory: .
         snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 3 --configfile .test/config.yaml"
+        args: "--use-conda --show-failed-logs --cores 3 --configfile .test/config-test.yaml"
 
     - name: Test report
       uses: snakemake/snakemake-github-action@v1.25.1
       with:
-        directory: .test
+        directory: .
         snakefile: workflow/Snakefile
         args: "--report report.zip --configfile .test/config.yaml"
