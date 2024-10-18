@@ -46,7 +46,7 @@ jobs:
       with:
         directory: .
         snakefile: workflow/Snakefile
-        args: "--use-conda --show-failed-logs --cores 3 --configfile .test/config-test.yaml"
+        args: "--use-conda --show-failed-logs --cores 3 --configfile .test/config.yaml"
 
     - name: Test report
       uses: snakemake/snakemake-github-action@v1.25.1
