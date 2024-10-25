@@ -102,7 +102,7 @@ create_files() {
     max_line_len=$(wc -L ${fa_file} | awk '{print $1}') 
 
     if [ "${max_line_len}" -gt 65536 ]; then
-        
+
         fasta_formatter -i $fa_file -w 60 > ${pep_dir}/.tmp_multi_line_${progenitor}.fa
         fa_file=${pep_dir}/.tmp_multi_line_${progenitor}.fa
 

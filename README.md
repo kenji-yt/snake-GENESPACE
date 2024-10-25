@@ -1,7 +1,6 @@
 # `snake-GENESPACE`
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.3.0-brightgreen.svg)](https://snakemake.github.io)
-[![GitHub actions status](https://github.com/<owner>/<repo>/workflows/Tests/badge.svg?branch=main)](https://github.com/<owner>/<repo>/actions?query=branch%3Amain+workflow%3ATests)
 
 
 A Snakemake workflow to automate and facilitate identification of synteny and orthology using GENESPACE. 
@@ -40,7 +39,7 @@ If you have some data already in the right format for GENESPACE just put your "b
 
 Your input directory should have the following structure:
 ```
-Input_directory/
+input_directory/
 ├── Species_1/
 │   ├── annotation.gff
 │   └── assembly.fa
@@ -54,16 +53,16 @@ Input_directory/
     ├── Species_3.bed
     └── Species_4.bed
 ```
-
+At present, snake-GENESPACE does not provide any option to specify your own run parameters. This is because GENESPACE is said to cover a wide range of evolutionary scenarios under its default mode. If this is something that is really desired feel free to open an issue to request it. 
 
 ## Analysis 
 
-Once you have your input directory you just need to edit "snake-GENESPACE/config/config.yaml". This file is used to tell snake-GENESPACE where the input directory is and where the output should be written to. So just replace the paths after "INPUT:" and "OUTPUT:" with the path to your input directory and the path to a new directory that will be created to house the outputs. Note that these paths should be either absolute or relative to the "snake-GENESPACE/" directory. 
+That's it, you are ready to run a GENEPSACE analysis. From within the "snake-GENESPACE/" directory run:
+```
+snakemake --use-conda --cores N --config INPUT='your/input/directory'
+```
+Make sure to have snakemake make installed, to replace 'your/input/directory' with the path to you input directory and 'N' with the number of cores you wish to allocate to the job. If you installed snakemake in a conda environment make sure to activate it (eg. "conda activate snakemake_env").  
 
-That's it, you are ready to run a GENEPSACE analysis. Just activate your conda environment where snakemake is installed (eg. "conda activate snakemake_env") and then, from within the "snake-GENESPACE/" directory run:
-```
-snakemake --use-conda --cores N 
-```
-Make sure to be in the conda directory with snakemake intalled and to replace N with the number of cores you wish to allocate to snakemake. 
+The outputs will now be generated in a results directory within the snake-GENESPACE directory. 
 
 *Extra:* If you are new to snakemake you might find it weird to run the program from within its source directory. This is how snakemake works and it's nothing to worry about. Finally, do not be alarmed if the messages printed to the terminal are confusing. This is normal since multiple processes print out at the same time (if -c >1). If you want to know what happened check out the log files in the log directory within your specified output directory. 
