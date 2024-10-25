@@ -47,7 +47,7 @@ jobs:
         directory: .
         snakefile: workflow/Snakefile
         args: "--use-conda --show-failed-logs --cores 3 --configfile .test/config.yaml"
-        stagein: "apt-get update && apt-get -y install gcc && m -rf /var/lib/apt/lists/*"
+        stagein: "sudo apt-get update && sudo apt-get -y install gcc && rm -rf /var/lib/apt/lists/*"
 
     - name: Test report
       uses: snakemake/snakemake-github-action@v1.25.1
