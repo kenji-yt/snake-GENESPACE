@@ -41,20 +41,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - run:   |
-        sudo apt update
-        sudo apt install gcc-10 g++-10
-      shell: bash
-
     - name: Test workflow
       uses: snakemake/snakemake-github-action@v1.25.1
       with:
         directory: .
         snakefile: workflow/Snakefile
         args: "--use-conda --show-failed-logs --cores 3 --configfile .test/config.yaml"
-      env:
-        CC:   gcc-10
-        CXX:  g++-10
+        stagein: "apt-get update && apt-get -y install gcc && m -rf /var/lib/apt/lists/*"
 
     - name: Test report
       uses: snakemake/snakemake-github-action@v1.25.1
