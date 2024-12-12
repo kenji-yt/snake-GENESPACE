@@ -69,11 +69,11 @@ rule parse_genespace_input:
     params:
         scripts=f"{SCRIPTS_DIR}"
     log:
-        "results/logs/genespace/parse_genespace_input.log", # Nothing going it 2> due to agat
+        "results/logs/genespace/parse_genespace_input/", 
     threads:genespace_parse_threads
     conda:
         "envs/genespace.yaml",
-    shell: # CAN USE SCRIPTS and associative arrays actually. 
+    shell: # Could use scripts and associative arrays actually. 
         "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_run_dir} -l {log} -c {threads}" 
 
 

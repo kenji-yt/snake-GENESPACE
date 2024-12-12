@@ -7,13 +7,13 @@
 # Default values
 in_dir=""
 out_dir=""
-log_file=""
+log_dir=""
 cores=""
 
 
 # Usage example
 function print_usage() {
-    echo "Usage: $0 -i <input_directory> -o <genespace_input_directory> -l <log_file> -c <cores>" 
+    echo "Usage: $0 -i <input_directory> -o <genespace_input_directory> -l <log_dir> -c <cores>" 
 }
 
 # Parse command line options using getopts 
@@ -24,7 +24,7 @@ while getopts "i:o:l:c:" flag; do
         o)
             out_dir="$OPTARG" ;;
         l)
-            log_file="$OPTARG" ;;
+            log_dir="$OPTARG" ;;
         c)
             cores="$OPTARG" ;;
         *) 
@@ -37,7 +37,7 @@ done
 
 # Check if required flags are provided
 if test -z "$in_dir"; then
-    echo "-i flags is required."
+    echo "-i flags is required." 
     print_usage
     exit 1
 fi
@@ -46,7 +46,7 @@ if test -z "$out_dir"; then
     print_usage
     exit 1
 fi
-if test -z "$log_file"; then
+if test -z "$log_dir"; then
     echo "-l flags is required."
     print_usage
     exit 1
@@ -61,7 +61,7 @@ fi
 
 bed_dir="${out_dir}/bed"
 pep_dir="${out_dir}/peptide"
-export log_file=$log_file
+export log_dir=$log_dir
 export in_dir=$in_dir
 export out_dir=$out_dir
 export bed_dir=$bed_dir
@@ -87,11 +87,12 @@ trap delete_file INT
 #----------------------------------------------#
 #----------------------------------------------#
 
+agat_log_dir=${log_dir}/agat_logs/
 
 mkdir -p ${bed_dir} ${pep_dir} ${agat_log_dir}
 
-# function to keep primary isoform only from annotation, extract cbs and convert to peptide and convert gff to bed.
-# if bed and peptide file already present it copies them to the output directory.
+# Function to keep primary isoform only from annotation, extract cbs and convert to peptide and convert gff to bed. 
+# Then also rename primary isoform bed and peptide fasta to have same name. 
 create_files() {
 
     progenitor=$1
@@ -155,6 +156,7 @@ create_files() {
 
 }
 
+# If bed and peptide file already present it copies them to the output directory.
 move_input_files(){
 
     directory=$1 
@@ -176,13 +178,11 @@ export -f create_files
 export -f move_input_files
 
 # Make the files
-ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'create_files "{}"'
+ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'create_files "{}" >${log_dir}/"{}.log" 2>&1'
 ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
 
 
 # Delete temporary files & move agat logs.
-log_dir=$(dirname ${log_file})
-agat_log_dir=${log_dir}/agat_logs
 find . -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
 find ${out_dir} -name ".tmp*" | xargs -I {} rm {}
 
