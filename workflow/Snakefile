@@ -43,7 +43,18 @@ genespace_parse_threads = count if count < workflow.cores else workflow.cores
 
 rule all:
     input:
-        genespace_run_log="results/logs/genespace/genespace_run.log" 
+        "results/snake-GENESPACE-reproducibility_report.txt"
+
+
+rule make_reproducibility_report:
+    input:
+        input_dir=f"{INPUT_DIR}",
+        run_log="results/logs/genespace/genespace_run.log",
+    output:
+        "results/snake-GENESPACE-reproducibility_report.txt",
+    threads: workflow.cores
+    shell:
+        "bash {workflow.basedir}/scripts/make_reproducibility_report.sh {input.input_dir} {threads}"
 
 
 rule run_genespace:
