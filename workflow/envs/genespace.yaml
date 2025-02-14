@@ -2,7 +2,7 @@ channels:
   - conda-forge
   - bioconda
   - defaults
-dependencies: # /!\WARNING/!\ If you touch this, CHANGE reproducibility report script.
+dependencies: 
   - git=2.45.2
   - r-base=4.3
   - perl=5.32.1
