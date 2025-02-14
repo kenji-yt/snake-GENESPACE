@@ -42,6 +42,9 @@ echo "*********" >> "${report}"
 echo "" >> "${report}"
 echo "" >> "${report}"
 
+version_snake_genespace=$(git describe --tags --abbrev=0 | sed 's/v//g')
+echo "snake-GENESPACE=${version_snake_genespace}" >> "${report}"
+
 run_genespace_script="workflow/scripts/run_genespace.R"
 genespace_version=$(grep "devtools::install" ${run_genespace_script} | sed 's/.*@v//g' | sed 's/",\ quiet.*//g')
 echo "GENESPACE=${genespace_version}" >> "${report}"
