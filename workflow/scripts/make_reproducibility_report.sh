@@ -17,6 +17,30 @@ echo "Run date & time: ${CURRENT_DATETIME}" >> "${report}"
 echo "Number of allocated cores: ${n_cores}" >> "${report}" 
 echo "" >> "${report}"
 echo "" >> "${report}"
+echo "********************" >> "${report}"
+echo "* Operating System *" >> "${report}"
+echo "********************" >> "${report}"
+echo "" >> "${report}"
+echo "" >> "${report}"
+
+OS=$(uname -s)
+
+if [ "$OS" == "Linux" ]; then
+    # For Linux, try to get version from /etc/os-release
+    if [ -f /etc/os-release ]; then
+        source /etc/os-release
+        echo "Operating System: $NAME" >> "${report}"
+        echo "Version: $VERSION" >> "${report}"
+    else
+        echo "Linux OS (version unknown)" >> "${report}"
+    fi
+# Assume anything else is macOS
+else
+    echo "Operating System: macOS"  >> "${report}"
+    sw_vers  >> "${report}"
+fi
+
+echo "" >> "${report}"
 echo "" >> "${report}"
 echo "**************" >> "${report}"
 echo "* INPUT DATA *" >> "${report}"
