@@ -10,6 +10,8 @@ The aim of this workflow is to make GENESPACE easier to use and improve reproduc
 - Input data formating
 - Software instalation
 
+It also produces a detailed "reproducibility report" with information about software versions, operating system, input and output files. 
+
 Input data formating is the "trickiest part of running GENESPACE" (see [GENESPACE](https://github.com/jtlovell/GENESPACE) section 3). With the snake-GENESPACE workflow you can have your data as GFF structural annotations and fasta genome assemblies. The workflow automatically:
 
 - Converts the GFF file into bed format.
