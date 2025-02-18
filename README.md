@@ -3,9 +3,9 @@
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.3.0-brightgreen.svg)](https://snakemake.github.io)
 
 
-A Snakemake workflow to automate and facilitate identification of synteny and orthology using GENESPACE. 
+A Snakemake workflow to automate and facilitate usage of GENESPACE, an analytical pipeline to understand patterns of synteny and orthology across multiple genomes. 
 
-The aim of this workflow is to make the use of GENESPACE easier. It does so by automating the most annoying parts of a GENESPACE analysis, namely:
+The aim of this workflow is to make GENESPACE easier to use and improve reproducibility. It does so by automating the most annoying parts of a GENESPACE analysis, namely:
 
 - Input data formating
 - Software instalation
