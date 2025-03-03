@@ -2,6 +2,7 @@
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.3.0-brightgreen.svg)](https://snakemake.github.io)
 
+(Only available for Mac and Linux)
 
 A Snakemake workflow to automate and facilitate usage of GENESPACE, an analytical pipeline to understand patterns of synteny and orthology across multiple genomes. 
 
