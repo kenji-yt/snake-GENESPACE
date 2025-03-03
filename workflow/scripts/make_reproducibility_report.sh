@@ -49,15 +49,28 @@ echo "" >> "${report}"
 echo "" >> "${report}"
 
 # Loop through each file in the input directory
-for sub_input_dir in "${input_dir}"/*; do
-    if [ -d "${sub_input_dir}" ]; then
-        echo $(basename "${sub_input_dir}") >> "${report}"
-        find "${sub_input_dir}" -maxdepth 1 -type f | \
-        xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"   
-    echo "" >> "${report}"
-    echo "" >> "${report}"
-    fi
-done
+if [ "$OS" == "Linux" ]; then
+    echo "Linux md5sum checksums for the input files" >> "${report}"
+    for sub_input_dir in "${input_dir}"/*; do
+        if [ -d "${sub_input_dir}" ]; then
+            echo $(basename "${sub_input_dir}") >> "${report}"
+            find "${sub_input_dir}" -maxdepth 1 -type f | \
+            xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"   
+            echo "" >> "${report}"
+            echo "" >> "${report}"
+        fi
+    done
+# Assume anything else is macOS
+else
+    for sub_input_dir in "${input_dir}"/*; do
+        if [ -d "${sub_input_dir}" ]; then
+            echo "Mac md5 checksums for the input files" >> "${report}"
+            echo $(basename "${sub_input_dir}") >> "${report}"
+            find "${sub_input_dir}" -maxdepth 1 -type f | \
+            xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"  
+        fi
+    done
+fi
 
 echo "" >> "${report}"
 echo "" >> "${report}"
@@ -104,8 +117,20 @@ echo "* OUTPUT FILES *" >> "${report}"
 echo "****************" >> "${report}"
 echo "" >> "${report}"
 echo "" >> "${report}"
-find "results/genespace/run_dir/bed" -name "*.bed" | xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"
-echo "" >> "${report}"
-find "results/genespace/run_dir/peptide" -name "*.fa" | xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"
-echo "" >> "${report}"
-find "results/genespace/run_dir/results" -name "*.csv" | xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"
+if [ "$OS" == "Linux" ]; then
+    echo "Linux md5sum checksums for the input files" >> "${report}"
+    echo "" >> "${report}"
+    find "results/genespace/run_dir/bed" -name "*.bed" | xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"
+    echo "" >> "${report}"
+    find "results/genespace/run_dir/peptide" -name "*.fa" | xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"
+    echo "" >> "${report}"
+    find "results/genespace/run_dir/results" -name "*.csv" | xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"
+else
+    echo "Mac md5 checksums for the input files" >> "${report}"
+    echo "" >> "${report}"
+    find "results/genespace/run_dir/bed" -name "*.bed" | xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"
+    echo "" >> "${report}"
+    find "results/genespace/run_dir/peptide" -name "*.fa" | xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"
+    echo "" >> "${report}"
+    find "results/genespace/run_dir/results" -name "*.csv" | xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"
+
