@@ -133,4 +133,4 @@ else
     find "results/genespace/run_dir/peptide" -name "*.fa" | xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"
     echo "" >> "${report}"
     find "results/genespace/run_dir/results" -name "*.csv" | xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"
-
+fi
