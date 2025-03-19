@@ -35,7 +35,7 @@ git clone https://github.com/kenji-yt/snake-GENESPACE.git
 
 ## Input 
 
-The input to snake-GENESPACE is a directory. Inside it you should have one directory for each species (or genome). The name of the directory should be the species or genome name and will appear as such in the GENESPACE output figures. In these directories you should have **only** two files: a gff annotation and a fasta assembly. Name these files as you wish as long as they have one of the following extensions: "gff","gff3","fa","fasta","fq","fna","fastq". 
+The input to snake-GENESPACE is a directory. Inside it you should have one directory for each species (or genome). The name of the directory should be the species or genome name and will appear as such in the GENESPACE output figures. In these directories you should have **only** two files: a gff annotation and a fasta assembly. Name these files as you wish as long as they have one of the following extensions: "gff","gff3" for annotations; "fa","fasta","fq","fna","fastq" for assemblies. 
 
 If you have some data already in the right format for GENESPACE just put your "bed" and "peptide" directories within the snake-GENESPACE input directory. In brief, GENESPACE requires an annotation in bed format and a fasta file with peptide sequences. The gene or feature names in the bed file should match the sequence names in the fasta exactly. All bed files should be put in a directory called "bed" and all fasta files in a directory called "peptide". The name of each file should be the desired species (or genome) name and should be the same for corresponding bed and fasta. Getting data in this format is what snake-GENESPACE does using [AGAT](https://github.com/NBISweden/AGAT) and custom bash and awk script (see "snake-GENESPACE/workflow/scripts/parse_genespace_input.sh"). 
 
@@ -62,7 +62,7 @@ At present, snake-GENESPACE does not provide any option to specify your own run 
 
 That's it, you are ready to run a GENEPSACE analysis. From within the "snake-GENESPACE/" directory run:
 ```
-snakemake --use-conda --cores N --config INPUT='your/input/directory'
+snakemake --use-conda --cores N --config INPUT_DIR='your/input/directory'
 ```
 Make sure to have snakemake make installed, to replace 'your/input/directory' with the path to you input directory and 'N' with the number of cores you wish to allocate to the job. If you installed snakemake in a conda environment make sure to activate it (eg. "conda activate snakemake_env").  
 

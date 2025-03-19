@@ -22,7 +22,7 @@ if len(config) == 0:
 
 ## Parse config file
 # CAN USE CONFIG (config["foo"]) DIRECTLY IN RULES
-INPUT_DIR = os.path.normpath(config["INPUT"])
+INPUT_DIR = os.path.normpath(config["INPUT_DIR"])
 # Dont use script dir but see sourcing in snakefiles and rules section. 
 SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
 # Maybe: Non-rule Python statements inside the module are also evaluated in that separate namespace.
