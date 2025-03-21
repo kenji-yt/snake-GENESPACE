@@ -24,7 +24,7 @@ if len(config) == 0:
 # CAN USE CONFIG (config["foo"]) DIRECTLY IN RULES
 INPUT_DIR = os.path.normpath(config["INPUT_DIR"])
 # Dont use script dir but see sourcing in snakefiles and rules section. 
-SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
+# <I don't need this anymore as I use workflow.basedir> SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
 # Maybe: Non-rule Python statements inside the module are also evaluated in that separate namespace.
 # But still will it (the HEAL workflow) have the scripts??? 
 
@@ -52,9 +52,11 @@ rule make_reproducibility_report:
         run_log="results/logs/genespace/genespace_run.log",
     output:
         "results/reproducibility_report.txt",
+    params:
+        scripts=f"{workflow.basedir}/scripts",
     threads: workflow.cores
     shell:
-        "bash {workflow.basedir}/scripts/make_reproducibility_report.sh {input.input_dir} {threads}"
+        "bash {params.scripts}/make_reproducibility_report.sh {input.input_dir} {threads}"
 
 
 rule run_genespace:
@@ -77,15 +79,15 @@ rule parse_genespace_input:
         input_dir=f"{INPUT_DIR}",
     output:
         genespace_run_dir=directory("results/genespace/run_dir"),
-    #params:
-    #    scripts=f"{SCRIPTS_DIR}"
+    params:
+        scripts=f"{workflow.basedir}/scripts"
     log:
         "results/logs/genespace/parse_genespace_input/", 
     threads:genespace_parse_threads
     conda:
         "envs/genespace.yaml",
     shell: # Could use scripts and associative arrays actually. 
-        "bash {workflow.basedir}/scripts/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_run_dir} -l {log} -c {threads}" 
+        "bash {params.scripts}/parse_genespace_input.sh -i {input.input_dir} -o {output.genespace_run_dir} -l {log} -c {threads}" 
 
 
 
