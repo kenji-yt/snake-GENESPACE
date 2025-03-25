@@ -16,7 +16,7 @@ if len(config) == 0:
 
     else:
         sys.exit(
-            f"Make sure there is a config.yaml file in {os.getcwd()} or specify one with the --configfile commandline parameter."
+            f"Please specify the path to the input directory with --config INPUT_DIR='path/to/input_directory'."
         )
 
 
@@ -63,6 +63,8 @@ rule run_genespace:
     input:
         mc_scan_install_log="results/logs/MCScanX/MScanX_install.log", 
         genespace_run_dir="results/genespace/run_dir",
+    output:
+        "results/logs/genespace/genespace_run.log"
     params:
         mc_scan_dir="results/genespace/MCScanX/",
     log:

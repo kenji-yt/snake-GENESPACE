@@ -62,12 +62,13 @@ if [ "$OS" == "Linux" ]; then
     done
 # Assume anything else is macOS
 else
+    echo "Mac md5 checksums for the input files" >> "${report}"
     for sub_input_dir in "${input_dir}"/*; do
         if [ -d "${sub_input_dir}" ]; then
-            echo "Mac md5 checksums for the input files" >> "${report}"
             echo $(basename "${sub_input_dir}") >> "${report}"
             find "${sub_input_dir}" -maxdepth 1 -type f | \
-            xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"  
+            xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"
+            echo "" >> "${report}"  
         fi
     done
 fi
@@ -118,7 +119,7 @@ echo "****************" >> "${report}"
 echo "" >> "${report}"
 echo "" >> "${report}"
 if [ "$OS" == "Linux" ]; then
-    echo "Linux md5sum checksums for the input files" >> "${report}"
+    echo "Linux md5sum checksums for the output files" >> "${report}"
     echo "" >> "${report}"
     find "results/genespace/run_dir/bed" -name "*.bed" | xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"
     echo "" >> "${report}"
@@ -126,7 +127,7 @@ if [ "$OS" == "Linux" ]; then
     echo "" >> "${report}"
     find "results/genespace/run_dir/results" -name "*.csv" | xargs -n${n_cores} md5sum | awk '{print $2"\t"$1}' >> "${report}"
 else
-    echo "Mac md5 checksums for the input files" >> "${report}"
+    echo "Mac md5 checksums for the output files" >> "${report}"
     echo "" >> "${report}"
     find "results/genespace/run_dir/bed" -name "*.bed" | xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"
     echo "" >> "${report}"
