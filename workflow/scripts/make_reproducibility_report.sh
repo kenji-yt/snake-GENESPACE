@@ -4,7 +4,7 @@
 
 input_dir=$1
 n_cores=$2
-report=results/reproducibility_report.txt
+report=results/snake_GENESPACE_reproducibility_report.txt
 CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
 
 echo "******************" >> "${report}"
