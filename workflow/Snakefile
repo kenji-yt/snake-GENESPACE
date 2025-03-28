@@ -56,7 +56,7 @@ rule make_reproducibility_report:
         scripts=f"{workflow.basedir}/scripts",
     threads: workflow.cores
     shell:
-        "bash {params.scripts}/make_reproducibility_report.sh {input.input_dir} {threads}"
+        "bash {params.scripts}/make_GENESPACE_reproducibility_report.sh {input.input_dir} {threads}"
 
 
 rule run_genespace:
