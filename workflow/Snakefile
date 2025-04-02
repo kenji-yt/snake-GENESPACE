@@ -54,9 +54,11 @@ rule make_reproducibility_report:
         "results/snake_GENESPACE_reproducibility_report.txt",
     params:
         scripts=f"{workflow.basedir}/scripts",
-    threads: workflow.cores
+        cores=workflow.cores
+    conda:
+        "envs/genespace.yaml",
     shell:
-        "bash {params.scripts}/make_GENESPACE_reproducibility_report.sh {input.input_dir} {threads}"
+        "bash {params.scripts}/make_GENESPACE_reproducibility_report.sh {input.input_dir} {params.cores}"
 
 
 rule run_genespace:

@@ -92,7 +92,9 @@ MCScanX_exec="results/genespace/MCScanX/MCScanX"
 birth_MCScanX=$(ls -l --full-time --time=birth ${MCScanX_exec} | awk '{print $6, $7}')
 echo "MCScanX=No version, Created (or last modified) on ${birth_MCScanX}" >> "${report}"
 
-environment="workflow/envs/genespace.yaml"
+# Recreate yaml for compatibility with HEAL (a downstream dependency) 
+environment="results/genespace/.tmp_genespace.yaml"
+conda env export --from-history  > ${environment}
 append_lines=false
 
 # Read the input file line by line
@@ -110,6 +112,8 @@ while IFS= read -r line; do
         append_lines=true
     fi
 done < "$environment"
+
+rm $environment
 
 echo "" >> "${report}"
 echo "" >> "${report}"
