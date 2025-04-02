@@ -55,6 +55,7 @@ rule make_reproducibility_report:
     params:
         scripts=f"{workflow.basedir}/scripts",
         cores=workflow.cores
+    threads:1
     conda:
         "envs/genespace.yaml",
     shell:
