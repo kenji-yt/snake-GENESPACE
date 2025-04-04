@@ -156,6 +156,10 @@ create_files() {
 
 }
 
+# ":" is not allowed in gene names by genespace. 
+sed -i 's/:/_/g' ${primary_iso_pep_fa}
+sed -i 's/:/_/g' ${primary_iso_bed}
+
 # If bed and peptide file already present it copies them to the output directory.
 move_input_files(){
 
