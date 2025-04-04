@@ -48,13 +48,19 @@ input_directory/
 │   └── assembly.fa
 ├── Species_2/
 │   ├── annotation.gff
-│   └── assembly.fa       
+│   └── assembly.fa
+├── Species_3/
+│   ├── annotation.gff
+│   └── assembly.fa
+(etc...) 
+
+You can also have some inputs already GENESPACE formated:
 ├── peptide/
-│   ├── Species_3.fa
-│   └── Species_4.fa
+│   ├── Species_5.fa
+│   └── Species_6.fa
 └── bed/
-    ├── Species_3.bed
-    └── Species_4.bed
+    ├── Species_5.bed
+    └── Species_6.bed
 ```
 At present, snake-GENESPACE does not provide any option to specify your own run parameters. This is because GENESPACE is said to cover a wide range of evolutionary scenarios under its default mode. If this is something that is really desired feel free to open an issue to request it. 
 
