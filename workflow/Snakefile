@@ -7,26 +7,17 @@ min_version("5.20.1")
 ## Import required libraries
 import os
 
-## Configuration file check
 
+## Configuration check
 if len(config) == 0:
-    if os.path.isfile("config/config.yaml"):
-
-        configfile: "config/config.yaml"
-
-    else:
-        sys.exit(
-            f"Please specify the path to the input directory with --config INPUT_DIR='path/to/input_directory'."
-        )
+    
+    error_msg=f"Please specify the path to the input directory with --config INPUT_DIR='path/to/input_directory'."
+    raise ValueError(error_msg)
 
 
-## Parse config file
-# CAN USE CONFIG (config["foo"]) DIRECTLY IN RULES
+## Config
 INPUT_DIR = os.path.normpath(config["INPUT_DIR"])
-# Dont use script dir but see sourcing in snakefiles and rules section. 
-# <I don't need this anymore as I use workflow.basedir> SCRIPTS_DIR = os.path.normpath("workflow/scripts/") # How to call the scripts during modularization?
-# Maybe: Non-rule Python statements inside the module are also evaluated in that separate namespace.
-# But still will it (the HEAL workflow) have the scripts??? 
+SCRIPTS_DIR = config.get("SCRIPTS_DIR", f"{workflow.basedir}/scripts") # For integration into HEAL (reverse dependency)
 
 ## Define number of cores for parsing
 count = 0
@@ -53,7 +44,7 @@ rule make_reproducibility_report:
     output:
         "results/snake_GENESPACE_reproducibility_report.txt",
     params:
-        scripts=f"{workflow.basedir}/scripts",
+        scripts=f"{SCRIPTS_DIR}",
         cores=workflow.cores
     threads:1
     conda:
@@ -70,13 +61,14 @@ rule run_genespace:
         "results/logs/genespace/genespace_run.log"
     params:
         mc_scan_dir="results/genespace/MCScanX/",
+        scripts=f"{SCRIPTS_DIR}"
     log:
         "results/logs/genespace/genespace_run.log",
     threads:workflow.cores
     conda:
         "envs/genespace.yaml",
     script:
-        "scripts/run_genespace.R" 
+        "{params.scripts}/run_genespace.R" 
 
 
 rule parse_genespace_input:
@@ -85,7 +77,7 @@ rule parse_genespace_input:
     output:
         genespace_run_dir=directory("results/genespace/run_dir"),
     params:
-        scripts=f"{workflow.basedir}/scripts"
+        scripts=f"{SCRIPTS_DIR}"
     log:
         "results/logs/genespace/parse_genespace_input/", 
     threads:genespace_parse_threads
