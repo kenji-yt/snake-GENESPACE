@@ -68,7 +68,7 @@ rule run_genespace:
     conda:
         "envs/genespace.yaml",
     script:
-        "{params.scripts}/run_genespace.R" 
+        "scripts/run_genespace.R" 
 
 
 rule parse_genespace_input:
