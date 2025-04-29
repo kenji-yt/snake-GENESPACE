@@ -20,3 +20,4 @@ dependencies:
   - r-igraph=2.0.3
   - r-dbscan=1.1
   - r-data.table=1.15
+  - sed=4.7
