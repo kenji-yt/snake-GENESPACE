@@ -171,6 +171,8 @@ create_files() {
     elif [ -z "${primary_iso_bed}" ]; then
         echo "ERROR: bed file for ${progenitor} was not created. Check agat logs. Exiting.."
         exit 1
+    fi
+    
     # ":" is not allowed in gene names by genespace. 
     sed -i 's/:/_/g' ${primary_iso_pep_fa}
     sed -i 's/:/_/g' ${primary_iso_bed}
