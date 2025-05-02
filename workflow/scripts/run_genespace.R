@@ -7,11 +7,20 @@ if (!requireNamespace("GENESPACE", quietly = TRUE))
 
 library(GENESPACE)
 
-gpar <- init_genespace(
-  wd = snakemake@input[["genespace_run_dir"]], 
-  path2mcscanx = snakemake@params[["mc_scan_dir"]],
-  nCores= snakemake@threads)
+tryCatch({
+   
+  gpar <- init_genespace(
+    wd = snakemake@input[["genespace_run_dir"]], 
+    path2mcscanx = snakemake@params[["mc_scan_dir"]],
+    nCores= snakemake@threads)
 
-gpar <- run_genespace(gsParam = gpar,) 
+  gpar <- run_genespace(gsParam = gpar,) 
 
-sink()
+}, error = function(e) {
+
+    message(e$message)
+    quit(status = 1) 
+
+}, finally = {
+    sink()
+})
