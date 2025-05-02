@@ -99,6 +99,20 @@ create_files() {
     gff_file=$(find $in_dir/$progenitor \( -name "*.gff" -o -name "*.gff3" \))
     fa_file=$(find $in_dir/$progenitor \( -name "*.fa" -o -name "*.fasta" -o -name "*.fq" -o -name "*.fna" -o -name "fastq" \))
 
+    if [ -z "$gff_file" ]; then
+        echo "ERROR: No GFF file found for ${progenitor}. Exiting."
+        exit 1
+    elif [ -z "$fa_file" ]; then
+        echo "ERROR: No FASTA file found for ${progenitor}. Exiting."
+        exit 1
+    elif [ "$(echo "$gff_file" | wc -l)" -gt 1 ]; then
+        echo "ERROR: More than one gff file for ${progenitor}. Exiting."
+        exit 1
+    elif [  "$(echo "$fa_file" | wc -l)" -gt 1]; then
+        echo "ERROR: More than one fasta file for ${progenitor}. Exiting."
+        exit 1
+    fi
+    
     # To avoid https://github.com/NBISweden/AGAT/issues/56
     max_line_len=$(wc -L ${fa_file} | awk '{print $1}') 
 
@@ -183,7 +197,7 @@ export -f create_files
 export -f move_input_files
 
 # Make the files
-ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'create_files "{}" >${log_dir}/"{}.log" 2>&1'
+ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'create_files "{}" 2>&1 | tee ${log_dir}/"{}.log"'
 ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
 
 
