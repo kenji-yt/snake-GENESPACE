@@ -67,18 +67,20 @@ export out_dir=$out_dir
 export bed_dir=$bed_dir
 export pep_dir=$pep_dir
 
+agat_log_dir=${log_dir}/agat_logs/
 
 # Function to delete tmp files after premature interuption
-delete_file() {
+cleanup() {
+    find . -name "*.agat.log" | xargs -I {} 'mv {} ${agat_log_dir}'
     echo "Keyboard interupt. Deleting temporary files." 
     # If there are any temporary files in the output, delete them. 
     find $out_dir -name ".tmp*" | xargs rm 
     echo "Temporary files deleted successfully."
-    find . -name "*.agat.log" | xargs -I {} 'mv {} ${agat_log_dir}'
     exit 1
 }
-# Trap the script interruption (SIGINT) and execute the delete_file function
-trap delete_file INT
+# Trap the script interruption (SIGINT) and execute the cleanup function
+trap cleanup INT
+trap cleanup EXIT
 
 
 #----------------------------------------------#
@@ -86,8 +88,6 @@ trap delete_file INT
 #------- Make GENESPACE input directory -------#
 #----------------------------------------------#
 #----------------------------------------------#
-
-agat_log_dir=${log_dir}/agat_logs/
 
 mkdir -p ${bed_dir} ${pep_dir} ${agat_log_dir}
 
@@ -108,7 +108,7 @@ create_files() {
     elif [ "$(echo "$gff_file" | wc -l)" -gt 1 ]; then
         echo "ERROR: More than one gff file for ${progenitor}. Exiting."
         exit 1
-    elif [  "$(echo "$fa_file" | wc -l)" -gt 1]; then
+    elif [  "$(echo "$fa_file" | wc -l)" -gt 1 ]; then
         echo "ERROR: More than one fasta file for ${progenitor}. Exiting."
         exit 1
     fi
@@ -131,11 +131,11 @@ create_files() {
     primary_iso_pep_fa=${pep_dir}/${progenitor}.fa
     primary_iso_bed=${bed_dir}/${progenitor}.bed
     
-    agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff
+    agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff > /dev/null
 
-    agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa
+    agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa > /dev/null
 
-    agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed
+    agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed > /dev/null
     
     echo "Renaming primary transcripts after gene name for ${progenitor}."
     
