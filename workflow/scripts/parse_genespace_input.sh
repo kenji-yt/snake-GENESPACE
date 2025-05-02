@@ -71,15 +71,14 @@ agat_log_dir=${log_dir}/agat_logs/
 
 # Function to delete tmp files after premature interuption
 cleanup() {
-    find . -name "*.agat.log" | xargs -I {} 'mv {} ${agat_log_dir}'
-    echo "Keyboard interupt. Deleting temporary files." 
+    find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
+    echo "Parsing of input directory prematurely interupted. Deleting temporary files." 
     # If there are any temporary files in the output, delete them. 
     find $out_dir -name ".tmp*" | xargs rm 
     echo "Temporary files deleted successfully."
     exit 1
 }
 # Trap the script interruption (SIGINT) and execute the cleanup function
-trap cleanup INT
 trap cleanup EXIT
 
 
@@ -131,11 +130,11 @@ create_files() {
     primary_iso_pep_fa=${pep_dir}/${progenitor}.fa
     primary_iso_bed=${bed_dir}/${progenitor}.bed
     
-    agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff > /dev/null
+    agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff 2> /dev/null
 
-    agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa > /dev/null
+    agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa 2> /dev/null
 
-    agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed > /dev/null
+    agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed 2> /dev/null
     
     echo "Renaming primary transcripts after gene name for ${progenitor}."
     
@@ -166,6 +165,12 @@ create_files() {
 
         }' ${tmp_primary_iso_pep_fa} ${tmp_bed}
 
+    if [ -z "${primary_iso_pep_fa}" ]; then
+        echo "ERROR: peptide file for ${progenitor} was not created. Check agat logs. Exiting.."
+        exit 1
+    elif [ -z "${primary_iso_bed}" ]; then
+        echo "ERROR: bed file for ${progenitor} was not created. Check agat logs. Exiting.."
+        exit 1
     # ":" is not allowed in gene names by genespace. 
     sed -i 's/:/_/g' ${primary_iso_pep_fa}
     sed -i 's/:/_/g' ${primary_iso_bed}
@@ -202,6 +207,6 @@ ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_inp
 
 
 # Delete temporary files & move agat logs.
-find . -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
+find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
 find ${out_dir} -name ".tmp*" | xargs -I {} rm {}
 
