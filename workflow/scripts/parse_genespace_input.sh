@@ -76,19 +76,19 @@ cleanup() {
     find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
     if [ -f "${no_input_progenitors}" ]; then
         echo "An error occured due to wrong input data. Exiting..."
-        find $out_dir -name ".tmp*" | xargs --no-run-if-empty rm
+        find "${out_dir}" -name ".tmp*" | xargs --no-run-if-empty rm
         exit 1 
     elif [ -f "${no_output_progenitors}" ]; then
         echo "An error occured during parsing. Check parsing logs. Exiting..."
-        find $out_dir -name ".tmp*" | xargs --no-run-if-empty rm
+        find "${out_dir}" -name ".tmp*" | xargs --no-run-if-empty rm
         exit 1  
     elif [ "$normal_exit" = false ]; then
         echo "An error or keyboard interupt occured. Exiting..."
-        find $out_dir -name ".tmp*" | xargs --no-run-if-empty rm
+        find "${out_dir}" -name ".tmp*" | xargs --no-run-if-empty rm
         exit 1
     else
         echo "Parsing completed successfully."
-        find $out_dir -name ".tmp*" | xargs --no-run-if-empty rm
+        find "${out_dir}" -name ".tmp*" | xargs --no-run-if-empty rm
         exit 0    
     fi
 }
@@ -228,7 +228,7 @@ export -f create_files
 export -f move_input_files
 
 no_input_progenitors="${out_dir}/.tmp_missing_input_progenitors"
-no_output_progenitors="${out_dir}/.tmp_missing_output_progenitors "
+no_output_progenitors="${out_dir}/.tmp_missing_output_progenitors"
 ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -ec 'create_files "{}" 2>&1 | tee ${log_dir}/"{}".log'
 if [ -f ${no_input_progenitors} ]; then
     echo "ERROR: The following progenitors had erroneous input data:"
