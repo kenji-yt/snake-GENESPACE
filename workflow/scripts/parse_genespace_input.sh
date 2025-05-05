@@ -211,7 +211,7 @@ export -f create_files
 export -f move_input_files
 
 # Make the files
-ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'create_files "{}" 2>&1 | tee ${log_dir}/"{}.log"'
+ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'create_files "{}" 2>&1 | tee ${log_dir}/"{}".log'
 ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
 
 
