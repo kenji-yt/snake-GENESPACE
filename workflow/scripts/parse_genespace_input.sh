@@ -74,14 +74,18 @@ normal_exit=false
 # Function to delete tmp files after premature interuption
 cleanup() {
     find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
-    if [ -f ${no_input_progenitors} ]; then
+    if [ -f "${no_input_progenitors}" ]; then
         echo "An error occured due to wrong input data. Exiting..."
         find $out_dir -name ".tmp*" | xargs --no-run-if-empty rm
         exit 1 
-    elif [ -f ${no_output_progenitors} ]; then
+    elif [ -f "${no_output_progenitors}" ]; then
         echo "An error occured during parsing. Check parsing logs. Exiting..."
         find $out_dir -name ".tmp*" | xargs --no-run-if-empty rm
-        exit 1      
+        exit 1  
+    elif [ "$normal_exit" = false ]; then
+        echo "An error or keyboard interupt occured. Exiting..."
+        find $out_dir -name ".tmp*" | xargs --no-run-if-empty rm
+        exit 1
     else
         echo "Parsing completed successfully."
         find $out_dir -name ".tmp*" | xargs --no-run-if-empty rm
