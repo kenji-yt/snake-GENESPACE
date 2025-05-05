@@ -107,15 +107,19 @@ create_files() {
 
     if [ -z "$gff_file" ]; then
         echo "ERROR: No GFF file found for ${progenitor}. Exiting."
+        catch_error=true
         exit 1
     elif [ -z "$fa_file" ]; then
         echo "ERROR: No FASTA file found for ${progenitor}. Exiting."
+        catch_error=true
         exit 1
     elif [ "$(echo "$gff_file" | wc -l)" -gt 1 ]; then
         echo "ERROR: More than one gff file for ${progenitor}. Exiting."
+        catch_error=true
         exit 1
     elif [  "$(echo "$fa_file" | wc -l)" -gt 1 ]; then
         echo "ERROR: More than one fasta file for ${progenitor}. Exiting."
+        catch_error=true
         exit 1
     fi
     
@@ -174,9 +178,11 @@ create_files() {
 
     if [ ! -f "${primary_iso_pep_fa}" ]; then
         echo "ERROR: peptide file for ${progenitor} was not created. Check agat logs."
+        catch_error=true
         exit 1
     elif [ ! -f "${primary_iso_bed}" ]; then
         echo "ERROR: bed file for ${progenitor} was not created. Check agat logs."
+        catch_error=true
         exit 1
     fi
     
@@ -210,10 +216,11 @@ move_input_files(){
 export -f create_files
 export -f move_input_files
 
+catch_error=false
 # Make the files
 ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -ec 'create_files "{}" 2>&1 | tee ${log_dir}/"{}".log'
 if [ $? -ne 0 ]; then
-    echo "ERROR:  failed. Exiting."
+    echo "ERROR: One or more genome parsing failed. Exiting."
     exit 1
 fi
 ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
