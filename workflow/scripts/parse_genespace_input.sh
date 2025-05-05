@@ -69,15 +69,22 @@ export pep_dir=$pep_dir
 
 agat_log_dir=${log_dir}/agat_logs/
 
+normal_exit=false
+
 # Function to delete tmp files after premature interuption
 cleanup() {
     find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
-    echo "Parsing of input directory prematurely interupted. Deleting temporary files." 
-    # If there are any temporary files in the output, delete them. 
     find $out_dir -name ".tmp*" | xargs rm 
     echo "Temporary files deleted successfully."
-    exit 1
+    if[ "$normal_exit" = false ]; then
+        echo "Parsing was interrupted. Exiting..."
+        exit 1      
+    else
+        echo "Parsing completed successfully."
+        exit 0    
+    fi
 }
+
 # Trap the script interruption (SIGINT) and execute the cleanup function
 trap cleanup EXIT
 
@@ -165,11 +172,11 @@ create_files() {
 
         }' ${tmp_primary_iso_pep_fa} ${tmp_bed}
 
-    if [ -z "${primary_iso_pep_fa}" ]; then
-        echo "ERROR: peptide file for ${progenitor} was not created. Check agat logs. Exiting.."
+    if [ ! -f "${primary_iso_pep_fa}" ]; then
+        echo "ERROR: peptide file for ${progenitor} was not created. Check agat logs."
         exit 1
-    elif [ -z "${primary_iso_bed}" ]; then
-        echo "ERROR: bed file for ${progenitor} was not created. Check agat logs. Exiting.."
+    elif [ ! -f "${primary_iso_bed}" ]; then
+        echo "ERROR: bed file for ${progenitor} was not created. Check agat logs."
         exit 1
     fi
     
@@ -208,7 +215,4 @@ ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'creat
 ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
 
 
-# Delete temporary files & move agat logs.
-find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
-find ${out_dir} -name ".tmp*" | xargs -I {} rm {}
-
+normal_exit=true
