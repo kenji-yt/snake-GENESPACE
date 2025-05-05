@@ -74,7 +74,7 @@ normal_exit=false
 # Function to delete tmp files after premature interuption
 cleanup() {
     find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
-    if [ -f "${no_input_progenitors}" ]; then
+    if [ -f "${parsing_error_file}" ]; then
         echo "An error occured due to wrong input data. Exiting..."
         find "${out_dir}" -name ".tmp*" | xargs --no-run-if-empty rm
         exit 1 
@@ -115,22 +115,22 @@ create_files() {
 
     if [ -z "$gff_file" ]; then
         echo "ERROR: No GFF file found for ${progenitor}. Exiting."
-        echo "- ${progenitor}: No gff input file" >> $no_input_progenitors
+        echo "- ${progenitor}: No gff input file" >> "${parsing_error_file}"
         exit 1
     fi
     if [ -z "$fa_file" ]; then
         echo "ERROR: No FASTA file found for ${progenitor}. Exiting."
-        echo "- ${progenitor}: No fasta input file" >> $no_input_progenitors
+        echo "- ${progenitor}: No fasta input file" >> "${parsing_error_file}"
         exit 1
     fi
     if [ "$(echo "$gff_file" | wc -l)" -gt 1 ]; then
         echo "ERROR: More than one gff file for ${progenitor}. Exiting."
-        echo "- ${progenitor}: More than one gff input file" >> $no_input_progenitors
+        echo "- ${progenitor}: More than one gff input file" >> "${parsing_error_file}"
         exit 1
     fi
     if [  "$(echo "$fa_file" | wc -l)" -gt 1 ]; then
         echo "ERROR: More than one fasta file for ${progenitor}. Exiting."
-        echo "- ${progenitor}: More than one fasta input file" >> $no_input_progenitors
+        echo "- ${progenitor}: More than one fasta input file" >> "${parsing_error_file}"
         exit 1
     fi
     
@@ -189,11 +189,11 @@ create_files() {
 
     if [ ! -f "${primary_iso_pep_fa}" ]; then
         echo "ERROR: peptide file for ${progenitor} was not created. Check agat logs."
-        echo "- ${progenitor}: No peptide fasta file produced" >> "${no_output_progenitors}"
+        echo "- ${progenitor}: No peptide fasta file produced" >> "${parsing_error_file}"
         exit 1
     elif [ ! -f "${primary_iso_bed}" ]; then
         echo "ERROR: bed file for ${progenitor} was not created. Check agat logs."
-        echo "- ${progenitor}: No bed file produced" >> "${no_output_progenitors}"
+        echo "- ${progenitor}: No bed file produced" >> "${parsing_error_file}"
         exit 1
     fi
     
@@ -227,20 +227,17 @@ move_input_files(){
 export -f create_files
 export -f move_input_files
 
-no_input_progenitors="${out_dir}/.tmp_missing_input_progenitors"
-no_output_progenitors="${out_dir}/.tmp_missing_output_progenitors"
+parsing_error_file="${out_dir}/.tmp_error_progenitors"
 ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -ec 'create_files "{}" 2>&1 | tee ${log_dir}/"{}".log'
-if [ -f ${no_input_progenitors} ]; then
-    echo "ERROR: The following progenitors had erroneous input data:"
-    cat ${no_input_progenitors}
-    exit 1
+
+if [ -f ${parsing_error_file} ]; then
+    echo "ERROR: The following progenitors failed to correctly parse:"
+    cat ${parsing_error_file}
+    normal_exit=false
+else    
+    normal_exit=true
 fi
-if [ -f ${no_output_progenitors} ]; then
-    echo "ERROR: The following progenitors had erroneous output data:"
-    cat ${no_output_progenitors}
-    exit 1
-fi
+
 ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
 
 
-normal_exit=true
