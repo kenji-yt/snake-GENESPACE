@@ -76,7 +76,7 @@ cleanup() {
     find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
     find $out_dir -name ".tmp*" | xargs rm 
     echo "Temporary files deleted successfully."
-    if[ "$normal_exit" = false ]; then
+    if [ "$normal_exit" = false ]; then
         echo "Parsing was interrupted. Exiting..."
         exit 1      
     else
