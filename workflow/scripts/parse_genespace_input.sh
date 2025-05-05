@@ -185,17 +185,17 @@ create_files() {
 
     if [ ! -f "${primary_iso_pep_fa}" ]; then
         echo "ERROR: peptide file for ${progenitor} was not created. Check agat logs."
-        echo "- ${progenitor}: No peptide fasta file produced" >> $no_output_progenitors
+        echo "- ${progenitor}: No peptide fasta file produced" >> "${no_output_progenitors}"
         exit 1
     elif [ ! -f "${primary_iso_bed}" ]; then
         echo "ERROR: bed file for ${progenitor} was not created. Check agat logs."
-        echo "- ${progenitor}: No bed file produced" >> $no_output_progenitors
+        echo "- ${progenitor}: No bed file produced" >> "${no_output_progenitors}"
         exit 1
     fi
     
     # ":" is not allowed in gene names by genespace. 
-    sed -i 's/:/_/g' ${primary_iso_pep_fa}
-    sed -i 's/:/_/g' ${primary_iso_bed}
+    sed -i 's/:/_/g' "${primary_iso_pep_fa}"
+    sed -i 's/:/_/g' "${primary_iso_bed}"
     
     echo "Finished renaming for ${progenitor}."
 
@@ -223,8 +223,8 @@ move_input_files(){
 export -f create_files
 export -f move_input_files
 
-no_input_progenitors=.tmp_missing_input_progenitors
-no_output_progenitors=.tmp_missing_output_progenitors 
+no_input_progenitors="${out_dir}/.tmp_missing_input_progenitors"
+no_output_progenitors="${out_dir}/.tmp_missing_output_progenitors "
 ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -ec 'create_files "{}" 2>&1 | tee ${log_dir}/"{}".log'
 if [ -f ${no_input_progenitors} ]; then
     echo "ERROR: The following progenitors had erroneous input data:"
