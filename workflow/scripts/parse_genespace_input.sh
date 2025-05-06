@@ -228,6 +228,8 @@ export -f create_files
 export -f move_input_files
 
 parsing_error_file="${out_dir}/.tmp_error_progenitors"
+export parsing_error_file
+
 ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -ec 'create_files "{}" 2>&1 | tee ${log_dir}/"{}".log'
 
 if [ -f ${parsing_error_file} ]; then
