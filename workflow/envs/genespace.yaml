@@ -3,7 +3,7 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - cxx-compiler=1.9.0
+  - cxx-compiler
   - git=2.45.2
   - r-base=4.3
   - perl=5.32.1
