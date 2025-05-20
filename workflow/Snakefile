@@ -96,7 +96,7 @@ rule install_MCScanX:
     conda:
         "envs/genespace.yaml",
     shell:
-        "make -C {input.mc_scan_dir}" 
+        "make -C {input.mc_scan_dir} 2>&1 | tee {log}" 
 
 
 rule download_MCScanX:
@@ -107,7 +107,7 @@ rule download_MCScanX:
     conda:
         "envs/genespace.yaml",
     shell:
-        "git clone https://github.com/wyp1125/MCScanX {output.mc_scan_dir}"
+        "git clone https://github.com/wyp1125/MCScanX {output.mc_scan_dir} 2>&1 | tee {log}"
 
 
 

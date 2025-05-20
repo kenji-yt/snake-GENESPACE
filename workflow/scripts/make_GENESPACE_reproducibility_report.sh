@@ -86,11 +86,11 @@ echo "snake-GENESPACE=${version_snake_genespace}" >> "${report}"
 
 run_genespace_script="workflow/scripts/run_genespace.R"
 genespace_version=$(grep "devtools::install" ${run_genespace_script} | sed 's/.*@v//g' | sed 's/",\ quiet.*//g')
-echo "GENESPACE=${genespace_version}" >> "${report}"
+echo "- GENESPACE=${genespace_version}" >> "${report}"
 
 MCScanX_exec="results/genespace/MCScanX/MCScanX"
 birth_MCScanX=$(ls -l --full-time --time=birth ${MCScanX_exec} | awk '{print $6, $7}')
-echo "MCScanX=No version, Created (or last modified) on ${birth_MCScanX}" >> "${report}"
+echo "- MCScanX=No version, Created (or last modified) on ${birth_MCScanX}" >> "${report}"
 
 # Recreate yaml for compatibility with HEAL (a downstream dependency) 
 environment="results/genespace/.tmp_genespace.yaml"
@@ -102,7 +102,7 @@ while IFS= read -r line; do
     if [ "$append_lines" = true ]; then
         if [[ "$line" =~ ^[[:space:]]*- ]]; then
             # Strip the leading '- ' and write to the output file
-            echo "${line:4}" >> "$report"
+            echo "  - ${line:4}" >> "$report"
         else
             break
         fi
@@ -114,6 +114,9 @@ while IFS= read -r line; do
 done < "$environment"
 
 rm $environment
+
+gcc_version=$(gcc --version | awk '{print $4}' | head -1)
+sed -i "s/- gcc/- gcc=${gcc_version}/" "$report"
 
 echo "" >> "${report}"
 echo "" >> "${report}"
