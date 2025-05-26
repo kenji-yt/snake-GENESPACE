@@ -55,7 +55,7 @@ rule make_reproducibility_report:
 
 rule run_genespace:
     input:
-        mc_scan_install_log="results/logs/MCScanX/MScanX_install.log", 
+        mc_scan_install_log="results/logs/MCScanX/MCScanX_install.log", 
         genespace_run_dir="results/genespace/run_dir",
     output:
         "results/logs/genespace/genespace_run.log"
@@ -92,7 +92,7 @@ rule install_MCScanX:
     input:
         mc_scan_dir="results/genespace/MCScanX",
     log:
-        "results/logs/MCScanX/MScanX_install.log",
+        "results/logs/MCScanX/MCScanX_install.log",
     conda:
         "envs/genespace.yaml",
     shell:
