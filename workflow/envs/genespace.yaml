@@ -3,7 +3,9 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - gcc
+  - gxx=12.2
+  - openjdk=17
+  - binutils
   - git=2.45.2
   - r-base=4.3
   - perl=5.32.1

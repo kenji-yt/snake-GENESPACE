@@ -115,8 +115,8 @@ done < "$environment"
 
 rm $environment
 
-gcc_version=$(gcc --version | awk '{print $4}' | head -1)
-sed -i "s/- gcc/- gcc=${gcc_version}/" "$report"
+gxx_version=$(g++ --version | awk '{print $4}' | head -1)
+sed -i "s/- gxx/- gxx=${gxx_version}/" "$report"
 
 echo "" >> "${report}"
 echo "" >> "${report}"
