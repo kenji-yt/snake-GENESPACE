@@ -50,7 +50,7 @@ rule make_reproducibility_report:
     conda:
         "envs/genespace.yaml",
     shell:
-        "bash {params.scripts}/make_GENESPACE_reproducibility_report.sh {input.input_dir} {params.cores}"
+        "bash {params.scripts}/make_GENESPACE_reproducibility_report.sh {input.input_dir} {params.cores} {params.scripts}"
 
 
 rule run_genespace:

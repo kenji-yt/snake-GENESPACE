@@ -4,6 +4,7 @@
 
 input_dir=$1
 n_cores=$2
+script_dir=$3
 report=results/snake_GENESPACE_reproducibility_report.txt
 CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
 
@@ -84,7 +85,7 @@ echo "" >> "${report}"
 version_snake_genespace=$(git describe --tags --abbrev=0 | sed 's/v//g')
 echo "snake-GENESPACE=${version_snake_genespace}" >> "${report}"
 
-run_genespace_script="workflow/scripts/run_genespace.R"
+run_genespace_script="${script_dir}/run_genespace.R"
 genespace_version=$(grep "devtools::install" ${run_genespace_script} | sed 's/.*@v//g' | sed 's/",\ quiet.*//g')
 echo "- GENESPACE=${genespace_version}" >> "${report}"
 
