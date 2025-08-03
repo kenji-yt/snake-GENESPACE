@@ -6,7 +6,7 @@ dependencies:
   - gxx=12.2
   - openjdk=17
   - binutils
-  - git=2.45.2
+  - git
   - r-base=4.3
   - perl=5.32.1
   - orthofinder=2.5.5
