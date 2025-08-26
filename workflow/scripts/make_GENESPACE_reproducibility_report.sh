@@ -90,9 +90,9 @@ genespace_version=$(grep "devtools::install" ${run_genespace_script} | sed 's/.*
 echo "- GENESPACE=${genespace_version}" >> "${report}"
 
 MCScanX_exec="results/genespace/MCScanX/MCScanX"
-birth_MCScanX=$(ls -l --full-time --time=birth ${MCScanX_exec} | awk '{print $6, $7}')
-echo "- MCScanX=No version, Created (or last modified) on ${birth_MCScanX}" >> "${report}"
-
+mod_MCScanX=$(ls -l --full-time ${MCScanX_exec} | awk '{print $6, $7}')
+echo "- MCScanX=No version, last modified on ${mod_MCScanX}" >> "${report}"
+ls -l --full-time
 # Recreate yaml for compatibility with HEAL (a downstream dependency) 
 environment="results/genespace/.tmp_genespace.yaml"
 conda env export --from-history  > ${environment}
