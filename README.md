@@ -9,7 +9,7 @@ A Snakemake workflow to automate and facilitate usage of GENESPACE, an analytica
 The aim of this workflow is to make GENESPACE easier to use and improve reproducibility. It does so by automating the most annoying parts of a GENESPACE analysis, namely:
 
 - Input data formating
-- Software instalation
+- Software installation
 
 It also produces a detailed "reproducibility report" with information about software versions, operating system, input and output files. 
 
