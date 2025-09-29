@@ -32,6 +32,7 @@ GENESPACE depends on the stand alone tools MCScanX and Orthofinder as well as a 
 ```
 git clone https://github.com/kenji-yt/snake-GENESPACE.git
 ```
+[**Note:** Make sure to have a valid C++ compiler installed. Snake-GENESPACE does not take care of this dependency because MacOS and Linux users need different C++ compilers.]
 
 ## Input 
 
