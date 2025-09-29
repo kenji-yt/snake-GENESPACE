@@ -3,7 +3,9 @@ channels:
   - bioconda
   - defaults
 dependencies:
-# - gxx=12.2 Not compatible with macOS, users should get their own compiler
+  - gxx=12.2  # [linux]
+  - clang=14.0.3  # [osx]
+  - clangxx=14.0.3  # [osx]
   - openjdk=17
   - binutils
   - git
