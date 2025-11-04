@@ -24,6 +24,9 @@ You can also have part or all of your data already in the right format for GENES
 
 GENESPACE depends on the stand alone tools MCScanX and Orthofinder as well as a number of R-packages. It can be frustrating to manage installation of all the dependecies. Snakemake makes such dependencies easy to deal with by installing them automatically in a conda environment. **All this means** is that you just need to [install Snakemake via Conda](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) and to git clone this repository to have all the GENESPACE requirement met. 
 
+## Bugs, Suggestions, Help 
+
+If you wish to report an error/bug, ask for help, or suggest changes and new features, please open an issue [here](https://github.com/kenji-yt/snake-GENESPACE/issues). 
 
 ## Installation 
 
@@ -44,26 +47,29 @@ If you have some data already in the right format for GENESPACE just put your "b
 Your input directory should have the following structure:
 ```
 input_directory/
-├── Species_1/
+├── species_1/
 │   ├── annotation.gff
 │   └── assembly.fa
-├── Species_2/
+├── species_2/
 │   ├── annotation.gff
 │   └── assembly.fa
-├── Species_3/
+├── species_3/
 │   ├── annotation.gff
 │   └── assembly.fa
 (etc...) 
 
 You can also have some inputs already GENESPACE formated:
 ├── peptide/
-│   ├── Species_5.fa
-│   └── Species_6.fa
+│   ├── species_5.fa
+│   └── species_6.fa
 └── bed/
-    ├── Species_5.bed
-    └── Species_6.bed
+    ├── species_5.bed
+    └── species_6.bed
 ```
 At present, snake-GENESPACE does not provide any option to specify your own run parameters. This is because GENESPACE is said to cover a wide range of evolutionary scenarios under its default mode. If this is something that is really desired feel free to open an issue to request it. 
+
+You can find an **input directory template** in the `snake-GENESPACE` directory. This is not a test dataset as it only contains empty files. It just serves as a guide for your own input directory.  
+
 
 ## Analysis 
 
