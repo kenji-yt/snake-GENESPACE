@@ -81,4 +81,8 @@ Make sure to have snakemake make installed, to replace 'your/input/directory' wi
 
 The outputs will now be generated in a results directory within the snake-GENESPACE directory. 
 
+**IMPORTANT NOTE:** A lot of errors are due to strange input files. Unfortunately, snake-GENESPACE is not the best at producing informative error messages (and AGAT messages are also confusing). Some common error sources are: 
+- Chromosome names are not the same between the annotation and assembly
+- The number of characters per line in the assembly is not constant (in folded fasta files)
+
 *Extra:* If you are new to snakemake you might find it weird to run the program from within its source directory. This is how snakemake works and it's nothing to worry about. Finally, do not be alarmed if the messages printed to the terminal are confusing. This is normal since multiple processes print out at the same time (if -c >1). If you want to know what happened check out the log files in the log directory within your specified output directory. 
