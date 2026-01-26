@@ -9,6 +9,8 @@ dependencies:
   - git
   - r-base=4.3
   - perl=5.32.1
+  - python=3.9
+  - numpy=1.23
   - orthofinder=2.5.5
   - agat=1.4.0
   - fastx_toolkit=0.0.14
