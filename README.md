@@ -22,7 +22,7 @@ Input data formating is the "trickiest part of running GENESPACE" (see [GENESPAC
 This is done with the brilliant [AGAT suite of tools](https://github.com/NBISweden/AGAT) and some custom awk script. 
 You can also have part or all of your data already in the right format for GENESPACE. In this case you can include it in the snake-GENESPACE input directory (details below). Even if all your data is in the right format you might still want to use snake-GENESPACE to install all the required softwares.
 
-GENESPACE depends on the stand alone tools MCScanX and Orthofinder as well as a number of R-packages. It can be frustrating to manage installation of all the dependecies. Snakemake makes such dependencies easy to deal with by installing them automatically in a conda environment. **All this means** is that you just need to [install Snakemake via Conda](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) and to git clone this repository to have all the GENESPACE requirement met. 
+GENESPACE depends on the stand alone tools MCScanX and Orthofinder as well as a number of R-packages. It can be frustrating to manage installation of all the dependecies. Snakemake makes such dependencies easy to deal with by installing them automatically in a conda environment. **All this means** is that you just need to [install Snakemake via Conda](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) and to git clone this repository to have all the GENESPACE requirements met. 
 
 ## Bugs, Suggestions, Help 
 
@@ -35,7 +35,6 @@ If you wish to report an error/bug, ask for help, or suggest changes and new fea
 ```
 git clone https://github.com/kenji-yt/snake-GENESPACE.git
 ```
-[**Note:** Make sure to have a valid C++ compiler installed. Snake-GENESPACE does not take care of this dependency because MacOS and Linux users need different C++ compilers.]
 
 ## Input 
 
@@ -73,11 +72,11 @@ You can find an **input directory template** in the `snake-GENESPACE` directory.
 
 ## Analysis 
 
-That's it, you are ready to run a GENEPSACE analysis. From within the "snake-GENESPACE/" directory run:
+You are now ready to run a GENEPSACE analysis. From within the "snake-GENESPACE/" directory run:
 ```
 snakemake --use-conda --cores N --config INPUT_DIR='your/input/directory'
 ```
-Make sure to have snakemake make installed, to replace 'your/input/directory' with the path to you input directory and 'N' with the number of cores you wish to allocate to the job. If you installed snakemake in a conda environment make sure to activate it (eg. "conda activate snakemake_env").  
+Make sure to have snakemake installed, to replace 'your/input/directory' with the path to you input directory and 'N' with the number of cores you wish to allocate to the job. If you installed snakemake in a conda environment make sure to activate it (eg. "conda activate snakemake_env").  
 
 The outputs will now be generated in a results directory within the snake-GENESPACE directory. 
 
@@ -85,4 +84,4 @@ The outputs will now be generated in a results directory within the snake-GENESP
 - Chromosome names are not the same between the annotation and assembly
 - The number of characters per line in the assembly is not constant (in folded fasta files)
 
-*Extra:* If you are new to snakemake you might find it weird to run the program from within its source directory. This is how snakemake works and it's nothing to worry about. Finally, do not be alarmed if the messages printed to the terminal are confusing. This is normal since multiple processes print out at the same time (if -c >1). If you want to know what happened check out the log files in the log directory within your specified output directory. 
+*Extra:* If you are new to snakemake you might find it weird to run the program from within its source directory. This is how snakemake works and it's nothing to worry about. Finally, do not be alarmed if the messages printed to the terminal are confusing. This is normal since multiple processes print out at the same time (if -c >1). If you want to know what happened check out the log files in the log directory within the results directory. 
