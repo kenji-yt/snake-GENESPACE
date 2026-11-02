@@ -4,7 +4,9 @@
 
 input_dir=$1
 n_cores=$2
-script_dir=$3
+envs_dir=$3
+pipeline_version=$4
+genespace_version=$5
 report=results/snake_GENESPACE_reproducibility_report.txt
 CURRENT_DATETIME=$(date +"%Y-%m-%d %H:%M:%S")
 
@@ -82,42 +84,17 @@ echo "*********" >> "${report}"
 echo "" >> "${report}"
 echo "" >> "${report}"
 
-version_snake_genespace=$(git describe --tags --abbrev=0 | sed 's/v//g')
-echo "snake-GENESPACE=${version_snake_genespace}" >> "${report}"
+echo "snake-GENESPACE=${pipeline_version}" >> "${report}"
 
-run_genespace_script="${script_dir}/run_genespace.R"
-genespace_version=$(grep "devtools::install" ${run_genespace_script} | sed 's/.*@v//g' | sed 's/",\ quiet.*//g')
-echo "- GENESPACE=${genespace_version}" >> "${report}"
+genespace_installed=$(Rscript -e 'cat(as.character(utils::packageVersion("GENESPACE")))')
+echo "- GENESPACE=${genespace_installed} (GitHub jtlovell/GENESPACE@${genespace_version})" >> "${report}"
 
-MCScanX_exec="results/genespace/MCScanX/MCScanX"
-mod_MCScanX=$(ls -l --full-time ${MCScanX_exec} | awk '{print $6, $7}')
-echo "- MCScanX=No version, last modified on ${mod_MCScanX}" >> "${report}"
-ls -l --full-time
-# Recreate yaml for compatibility with HEAL (a downstream dependency) 
-environment="results/genespace/.tmp_genespace.yaml"
-conda env export --from-history  > ${environment}
-append_lines=false
+mcscanx_commit=$(git -C results/genespace/MCScanX rev-parse HEAD)
+echo "- MCScanX=commit ${mcscanx_commit} (GitHub wyp1125/MCScanX)" >> "${report}"
 
-# Read the input file line by line
-while IFS= read -r line; do
-    if [ "$append_lines" = true ]; then
-        if [[ "$line" =~ ^[[:space:]]*- ]]; then
-            # Strip the leading '- ' and write to the output file
-            echo "  - ${line:4}" >> "$report"
-        else
-            break
-        fi
-    fi
-
-    if [[ "$line" =~ ^dependencies: ]]; then
-        append_lines=true
-    fi
-done < "$environment"
-
-rm $environment
-
-gxx_version=$(g++ --version | awk '{print $4}' | head -1)
-sed -i "s/- gxx/- gxx=${gxx_version}/" "$report"
+# Pinned packages of the conda environment
+echo "- conda environment:" >> "${report}"
+sed -n '/^dependencies:/,$p' "${envs_dir}/genespace.yaml" | grep -E '^[[:space:]]*- ' | sed -E 's/^[[:space:]]*- */    - /; s/[[:space:]]*#.*$//' >> "${report}"
 
 echo "" >> "${report}"
 echo "" >> "${report}"

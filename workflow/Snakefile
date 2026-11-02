@@ -2,7 +2,7 @@
 
 from snakemake.utils import min_version
 
-min_version("5.20.1")
+min_version("9.0")
 
 ## Import required libraries
 import os
@@ -14,17 +14,22 @@ if len(config) == 0:
     error_msg=f"Please specify the path to the input directory with --config INPUT_DIR='path/to/input_directory'."
     raise ValueError(error_msg)
 
+## Versions (recorded in the reproducibility report)
+SNAKE_GENESPACE_VERSION = "1.1.0"
+GENESPACE_VERSION = "7561036be821e333c1dfb52461ccec7222e95582"
+MCSCANX_COMMIT = "0956cb8f900c152e2be8ba3196829e50ab454b94"
 
 ## Config
 INPUT_DIR = os.path.normpath(config["INPUT_DIR"])
 SCRIPTS_DIR = config.get("SCRIPTS_DIR", f"{workflow.basedir}/scripts") # For integration into HEAL (reverse dependency)
+ENVS_DIR = config.get("ENVS_DIR", f"{workflow.basedir}/envs") # also for HEAL
 
 ## Define number of cores for parsing
 count = 0
 for item in os.listdir(f"{INPUT_DIR}"):
     item_path = os.path.join(f"{INPUT_DIR}", item)
     # Check if the item is a directory and not excluded
-    if os.path.isdir(item_path) and item not in ["bed", "peptide"]:
+    if os.path.isdir(item_path) and item not in ["bed", "peptide"] and not item.startswith("."):
         count += 1
 genespace_parse_threads = count if count < workflow.cores else workflow.cores
 
@@ -36,32 +41,34 @@ rule all:
     input:
         "results/snake_GENESPACE_reproducibility_report.txt"
 
-
 rule make_reproducibility_report:
     input:
         input_dir=f"{INPUT_DIR}",
-        run_log="results/logs/genespace/genespace_run.log",
+        run_log="results/genespace/genespace_run_completed.txt",
     output:
         "results/snake_GENESPACE_reproducibility_report.txt",
     params:
         scripts=f"{SCRIPTS_DIR}",
-        cores=workflow.cores
+        cores=workflow.cores,
+        envs_dir=f"{ENVS_DIR}",
+        version=SNAKE_GENESPACE_VERSION,
+        genespace_version=GENESPACE_VERSION,
     threads:1
     conda:
         "envs/genespace.yaml",
     shell:
-        "bash {params.scripts}/make_GENESPACE_reproducibility_report.sh {input.input_dir} {params.cores} {params.scripts}"
-
+        'bash {params.scripts}/make_GENESPACE_reproducibility_report.sh "{input.input_dir}" "{params.cores}" "{params.envs_dir}" "{params.version}" "{params.genespace_version}"'
 
 rule run_genespace:
     input:
         mc_scan_install_log="results/logs/MCScanX/MCScanX_install.log", 
         genespace_run_dir="results/genespace/run_dir",
     output:
-        "results/logs/genespace/genespace_run.log"
+        "results/genespace/genespace_run_completed.txt"
     params:
         mc_scan_dir="results/genespace/MCScanX/",
-        scripts=f"{SCRIPTS_DIR}"
+        scripts=f"{SCRIPTS_DIR}",
+        genespace_version=GENESPACE_VERSION,
     log:
         "results/logs/genespace/genespace_run.log",
     threads:workflow.cores
@@ -104,11 +111,12 @@ rule download_MCScanX:
         mc_scan_dir=directory("results/genespace/MCScanX"),
     log:
         "results/logs/MCScanX/MCScanX_dowload.log",
+    params:
+        commit=MCSCANX_COMMIT,
     conda:
         "envs/genespace.yaml",
     shell:
-        "git clone https://github.com/wyp1125/MCScanX {output.mc_scan_dir} 2>&1 | tee {log}"
-
+        "(git clone https://github.com/wyp1125/MCScanX {output.mc_scan_dir} && git -C {output.mc_scan_dir} -c advice.detachedHead=false checkout {params.commit}) 2>&1 | tee {log}"
 
 
 

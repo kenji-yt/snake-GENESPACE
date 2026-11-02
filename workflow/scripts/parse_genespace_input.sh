@@ -57,7 +57,11 @@ if test -z "$cores"; then
     exit 1
 fi
 
- 
+# Absolute paths: each genome is parsed in its own folder (see create_files)
+mkdir -p "${out_dir}" "${log_dir}"
+in_dir=$(realpath "${in_dir}")
+out_dir=$(realpath "${out_dir}")
+log_dir=$(realpath "${log_dir}")
 
 bed_dir="${out_dir}/bed"
 pep_dir="${out_dir}/peptide"
@@ -67,13 +71,13 @@ export out_dir=$out_dir
 export bed_dir=$bed_dir
 export pep_dir=$pep_dir
 
-agat_log_dir=${log_dir}/agat_logs/
+agat_log_dir=${log_dir}/agat_logs
+export agat_log_dir
 
 normal_exit=false
 
 # Function to delete tmp files after premature interuption
 cleanup() {
-    find . -maxdepth 1 -name "*.agat.log" | xargs -I {} mv {} ${agat_log_dir}
     if [ -f "${parsing_error_file}" ]; then
         echo "An error occured due to wrong input data. Exiting..."
         find "${out_dir}" -name ".tmp*" | xargs --no-run-if-empty rm
@@ -152,12 +156,23 @@ create_files() {
     primary_iso_pep_fa=${pep_dir}/${progenitor}.fa
     primary_iso_bed=${bed_dir}/${progenitor}.bed
     
-    agat_sp_keep_longest_isoform.pl -gff $gff_file -o $primary_iso_gff 2> /dev/null
+    # Run AGAT in a folder of its own: it writes its logs (agat_log_<file name>) to the working directory,
+    # so genomes parsed in parallel with identically named files would overwrite each other's.
+    mkdir -p "${agat_log_dir}/${progenitor}"
+    cd "${agat_log_dir}/${progenitor}"
 
-    agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa 2> /dev/null
+    agat_failed() {
+        echo "ERROR: AGAT failed for ${progenitor} ($1). See the AGAT messages above."
+        echo "- ${progenitor}: AGAT failed ($1)" >> "${parsing_error_file}"
+        exit 1
+    }
 
-    agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed 2> /dev/null
-    
+    agat_sp_keep_longest_isoform.pl --gff $gff_file -o $primary_iso_gff || agat_failed "longest isoform"
+
+    agat_sp_extract_sequences.pl --gff $primary_iso_gff --fasta $fa_file -t cds -p -o $tmp_primary_iso_pep_fa || agat_failed "peptide extraction"
+
+    agat_convert_sp_gff2bed.pl --gff $primary_iso_gff -o $tmp_bed || agat_failed "bed conversion"
+
     echo "Renaming primary transcripts after gene name for ${progenitor}."
     
     awk -v peptide="${primary_iso_pep_fa}" -v bed="${primary_iso_bed}" '
@@ -230,7 +245,7 @@ export -f move_input_files
 parsing_error_file="${out_dir}/.tmp_error_progenitors"
 export parsing_error_file
 
-ls ${in_dir} | grep -v -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -ec 'create_files "{}" 2>&1 | tee ${log_dir}/"{}".log'
+ls ${in_dir} | grep -v -x -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -ec 'create_files "{}" 2>&1 | tee ${log_dir}/"{}".log'
 
 if [ -f ${parsing_error_file} ]; then
     echo "ERROR: The following progenitors failed to correctly parse:"
@@ -240,6 +255,6 @@ else
     normal_exit=true
 fi
 
-ls ${in_dir} | grep -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
+ls ${in_dir} | grep -x -E 'bed|peptide'| xargs -I {}  -P ${cores} bash -c 'move_input_files "{}"'
 
 
