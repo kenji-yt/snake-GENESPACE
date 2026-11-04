@@ -1,3 +1,4 @@
+# Used for: parsing annotations (AGAT), building MCScanX and running GENESPACE with OrthoFinder
 channels:
   - conda-forge
   - bioconda

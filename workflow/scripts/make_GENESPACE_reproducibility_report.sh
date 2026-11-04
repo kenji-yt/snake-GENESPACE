@@ -93,7 +93,8 @@ mcscanx_commit=$(git -C results/genespace/MCScanX rev-parse HEAD)
 echo "- MCScanX=commit ${mcscanx_commit} (GitHub wyp1125/MCScanX)" >> "${report}"
 
 # Pinned packages of the conda environment
-echo "- conda environment:" >> "${report}"
+purpose=$(sed -n 's/^# Used for: *//p' "${envs_dir}/genespace.yaml")
+echo "- conda environment (${purpose:-genespace}):" >> "${report}"
 sed -n '/^dependencies:/,$p' "${envs_dir}/genespace.yaml" | grep -E '^[[:space:]]*- ' | sed -E 's/^[[:space:]]*- */    - /; s/[[:space:]]*#.*$//' >> "${report}"
 
 echo "" >> "${report}"
