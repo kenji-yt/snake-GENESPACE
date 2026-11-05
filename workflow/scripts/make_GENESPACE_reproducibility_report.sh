@@ -121,3 +121,30 @@ else
     echo "" >> "${report}"
     find "results/genespace/run_dir/results" -name "*.csv" | xargs -n${n_cores} md5 | awk '{print $2"\t"$4}' >> "${report}"
 fi
+echo "" >> "${report}"
+echo "" >> "${report}"
+echo "***************" >> "${report}"
+echo "* PERFORMANCE *" >> "${report}"
+echo "***************" >> "${report}"
+echo "" >> "${report}"
+echo "" >> "${report}"
+# Run time of the last snakemake call (start time written by the workflow's onstart handler)
+if [ -f results/logs/run_start.txt ]; then
+    run_seconds=$(( $(date +%s) - $(cat results/logs/run_start.txt) ))
+    printf "Run time (last snakemake call, until this report): %d:%02d:%02d\n" $((run_seconds / 3600)) $((run_seconds % 3600 / 60)) $((run_seconds % 60)) >> "${report}"
+    echo "" >> "${report}"
+fi
+# One row per rule, from the Snakemake benchmark files (results/benchmarks/<rule>/*.tsv).
+# Wall and CPU times are summed over the rule's jobs (jobs can run in parallel, so they do not add up to the run time).
+# Peak memory is the largest maximum resident set size of any job; '-' when not measured (jobs of a few seconds).
+echo "Per rule: number of jobs, wall time (total and longest job), CPU time (total) and peak memory." >> "${report}"
+printf "%-45s %5s %12s %12s %12s %14s\n" "rule" "jobs" "wall_total" "wall_max" "cpu_total" "peak_mem_MB" >> "${report}"
+for bench_dir in results/benchmarks/*/; do
+    [ -d "${bench_dir}" ] || continue
+    awk -v rule="$(basename "${bench_dir}")" '
+        function hms(x) { x = int(x + 0.5); return sprintf("%d:%02d:%02d", int(x / 3600), int((x % 3600) / 60), x % 60) }
+        FNR == 1 { next }
+        { n++; wall += $1; if ($1 > wall_max) wall_max = $1; if ($10 != "NA") cpu += $10; if ($3 != "NA" && $3 > mem) mem = $3 }
+        END { printf "%-45s %5d %12s %12s %12s %14s\n", rule, n, hms(wall), hms(wall_max), hms(cpu), (mem > 0 ? sprintf("%.0f", mem) : "-") }
+    ' "${bench_dir}"*.tsv >> "${report}"
+done

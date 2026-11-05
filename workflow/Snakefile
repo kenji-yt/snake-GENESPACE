@@ -34,6 +34,9 @@ for item in os.listdir(f"{INPUT_DIR}"):
 genespace_parse_threads = count if count < workflow.cores else workflow.cores
 
 
+# Start time of each run, for the run time in the reproducibility report (not written by dry runs)
+onstart:
+    shell("mkdir -p results/logs && date +%s > results/logs/run_start.txt")
 
 ## Rules
 
@@ -71,6 +74,8 @@ rule run_genespace:
         genespace_version=GENESPACE_VERSION,
     log:
         "results/logs/genespace/genespace_run.log",
+    benchmark:
+        "results/benchmarks/run_genespace/run_genespace.tsv",
     threads:workflow.cores
     conda:
         "envs/genespace.yaml",
@@ -87,6 +92,8 @@ rule parse_genespace_input:
         scripts=f"{SCRIPTS_DIR}"
     log:
         "results/logs/genespace/parse_genespace_input/", 
+    benchmark:
+        "results/benchmarks/parse_genespace_input/parse_genespace_input.tsv",
     threads:genespace_parse_threads
     conda:
         "envs/genespace.yaml",
@@ -100,6 +107,8 @@ rule install_MCScanX:
         mc_scan_dir="results/genespace/MCScanX",
     log:
         "results/logs/MCScanX/MCScanX_install.log",
+    benchmark:
+        "results/benchmarks/install_MCScanX/install_MCScanX.tsv",
     conda:
         "envs/genespace.yaml",
     shell:
@@ -111,6 +120,8 @@ rule download_MCScanX:
         mc_scan_dir=directory("results/genespace/MCScanX"),
     log:
         "results/logs/MCScanX/MCScanX_dowload.log",
+    benchmark:
+        "results/benchmarks/download_MCScanX/download_MCScanX.tsv",
     params:
         commit=MCSCANX_COMMIT,
     conda:
