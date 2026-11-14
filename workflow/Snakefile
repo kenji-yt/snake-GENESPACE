@@ -15,7 +15,7 @@ if len(config) == 0:
     raise ValueError(error_msg)
 
 ## Versions (recorded in the reproducibility report)
-SNAKE_GENESPACE_VERSION = "1.1.0"
+SNAKE_GENESPACE_VERSION = "1.1.1"
 GENESPACE_VERSION = "7561036be821e333c1dfb52461ccec7222e95582"
 MCSCANX_COMMIT = "0956cb8f900c152e2be8ba3196829e50ab454b94"
 

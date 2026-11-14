@@ -26,6 +26,6 @@ dependencies:
   - r-r.utils=2.13.0
   - r-generics=0.1.4
   - r-igraph=2.3.4
-  - r-dbscan=1.2.7
+  - r-dbscan=1.2.6 # 1.2.7 rejects minPts = 0, which GENESPACE uses
   - r-data.table=1.18.6.1
   - sed=4.10
